@@ -1481,6 +1481,7 @@ dependencies = [
     { name = "sqlalchemy" },
     { name = "streamlit" },
     { name = "twilio" },
+    { name = "vertexai" },
 ]
 
 [package.metadata]
@@ -1495,6 +1496,7 @@ requires-dist = [
     { name = "sqlalchemy", specifier = ">=2.0.38" },
     { name = "streamlit", specifier = ">=1.42.1" },
     { name = "twilio", specifier = ">=9.4.5" },
+    { name = "vertexai", specifier = ">=1.43.0" },
 ]
 
 [[package]]
@@ -1808,6 +1810,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/aa/63/e53da845320b757bf29ef6a9062f5c669fe997973f966045cb019c3f4b66/urllib3-2.3.0.tar.gz", hash = "sha256:f8c5449b3cf0861679ce7e0503c7b44b5ec981bec0d1d3795a07f1ba96f0204d", size = 307268 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c8/19/4ec628951a74043532ca2cf5d97b7b14863931476d117c471e8e2b1eb39f/urllib3-2.3.0-py3-none-any.whl", hash = "sha256:1cee9ad369867bfdbbb48b7dd50374c0967a0bb7710050facf0dd6911440e3df", size = 128369 },
+]
+
+[[package]]
+name = "vertexai"
+version = "1.43.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-cloud-aiplatform" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/76/73/ce7e141c6b89ff9e1d09c4a278dba5883fee8a3d4d48a817609dc628be7e/vertexai-1.43.0.tar.gz", hash = "sha256:c3646d1cc6cc7af78daa62cac2aed0bce13a0eb35e8a27ab23d1fadfb6c57752", size = 8389 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/fc/e1bd1f4bc7e5853faa1ccf67a825cc6fc3fafc90db58a222dda7fb2e898c/vertexai-1.43.0-py3-none-any.whl", hash = "sha256:2f53bc3d4c4a6610f70f63fcbc07c41fc45ff29c4fde09d65328eedbef90b642", size = 6427 },
 ]
 
 [[package]]
