@@ -1,12 +1,17 @@
 import os
 import json
-from huggingface_hub import InferenceClient
+from google.cloud import aiplatform
+from google.cloud.aiplatform import TextGenerationModel
 
 class GPTHelper:
     def __init__(self):
-        self.client = InferenceClient(token=os.environ.get("HUGGINGFACE_API_KEY"))
-        # Using OpenAssistant model which is free and optimized for chat
-        self.model = "OpenAssistant/oasst-sft-6-llama-30b"
+        # Initialize Vertex AI with project details
+        aiplatform.init(
+            project=os.environ.get("GOOGLE_CLOUD_PROJECT"),
+            location=os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+        )
+        # Using PaLM 2 for Text model
+        self.model = TextGenerationModel.from_pretrained("text-bison@002")
 
     def analyze_threat(self, query, context=""):
         try:
@@ -26,21 +31,19 @@ class GPTHelper:
             Please provide your analysis in the specified JSON format.
             """
 
-            response = self.client.text_generation(
+            response = self.model.predict(
                 prompt,
-                model=self.model,
-                max_new_tokens=1024,
                 temperature=0.3,
-                return_full_text=False
+                max_output_tokens=1024,
             )
 
             try:
-                return json.loads(response)
+                return json.loads(response.text)
             except json.JSONDecodeError:
                 # If response is not valid JSON, structure it manually
                 return {
                     "error": "Response format error",
-                    "raw_response": response
+                    "raw_response": response.text
                 }
 
         except Exception as e:
@@ -63,20 +66,18 @@ class GPTHelper:
             Provide your analysis in the specified JSON format.
             """
 
-            response = self.client.text_generation(
+            response = self.model.predict(
                 prompt,
-                model=self.model,
-                max_new_tokens=512,
                 temperature=0.3,
-                return_full_text=False
+                max_output_tokens=512,
             )
 
             try:
-                return json.loads(response)
+                return json.loads(response.text)
             except json.JSONDecodeError:
                 return {
                     "error": "Response format error",
-                    "raw_response": response
+                    "raw_response": response.text
                 }
 
         except Exception as e:
