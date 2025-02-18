@@ -2,18 +2,18 @@ import os
 import json
 from openai import OpenAI
 
-# the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-# do not change this unless explicitly requested by the user
-MODEL_NAME = "gpt-4o"
-
+# Using xAI's Grok API instead of OpenAI for free access
 class GPTHelper:
     def __init__(self):
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+        self.client = OpenAI(
+            base_url="https://api.x.ai/v1",
+            api_key=os.environ.get("XAI_API_KEY")
+        )
 
     def analyze_threat(self, query, context=""):
         try:
             response = self.client.chat.completions.create(
-                model=MODEL_NAME,
+                model="grok-2-1212",  # Using Grok's latest model
                 messages=[
                     {
                         "role": "system",
@@ -36,7 +36,7 @@ class GPTHelper:
     def tag_threat_data(self, data):
         try:
             response = self.client.chat.completions.create(
-                model=MODEL_NAME,
+                model="grok-2-1212",
                 messages=[
                     {
                         "role": "system",
