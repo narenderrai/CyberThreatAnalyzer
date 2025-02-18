@@ -14,4 +14,5 @@ dependencies = [
     "sqlalchemy>=2.0.38",
     "streamlit>=1.42.1",
     "twilio>=9.4.5",
+    "vertexai>=1.43.0",
 ]

@@ -5,7 +5,7 @@ import pandas as pd
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, JSON
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
-from sqlalchemy.pool import QueuePool
+from sqlalchemy.pool import NullPool  # Change to NullPool for better SSL handling
 
 Base = declarative_base()
 
@@ -22,12 +22,11 @@ class Database:
     def __init__(self):
         self.engine = create_engine(
             os.environ['DATABASE_URL'],
-            poolclass=QueuePool,
-            pool_size=5,
-            max_overflow=10,
-            pool_timeout=30,
-            pool_recycle=1800,
-            connect_args={'sslmode': 'require'}
+            poolclass=NullPool,  # Use NullPool instead of QueuePool
+            connect_args={
+                'sslmode': 'require',
+                'connect_timeout': 30
+            }
         )
         Base.metadata.create_all(self.engine)
         session_factory = sessionmaker(bind=self.engine)

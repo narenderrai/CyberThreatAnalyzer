@@ -1,15 +1,25 @@
 import os
 import json
-from openai import OpenAI
+from google.cloud import aiplatform
+import vertexai
+from vertexai.generative_models import GenerativeModel
 
 class GPTHelper:
     def __init__(self):
-        # Initialize OpenAI client
-        self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-        # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-        # do not change this unless explicitly requested by the user
-        self.model = "gpt-4o"
-        print("Initialized GPTHelper with OpenAI model")
+        try:
+            # Initialize Vertex AI with project details
+            project_id = os.environ.get("GOOGLE_CLOUD_PROJECT")
+            location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+
+            # Initialize Vertex AI
+            vertexai.init(project=project_id, location=location)
+
+            # Initialize the Generative AI model
+            self.model = GenerativeModel("gemini-pro")
+            print(f"Initialized GPTHelper with Google Cloud Vertex AI (Project: {project_id})")
+        except Exception as e:
+            print(f"Error initializing Vertex AI: {str(e)}")
+            raise
 
     def analyze_threat(self, query, context=""):
         try:
@@ -29,16 +39,21 @@ class GPTHelper:
             Please provide your analysis in the specified JSON format.
             """
 
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.3,
+            response = self.model.generate_content(
+                prompt,
+                generation_config={
+                    "temperature": 0.3,
+                    "max_output_tokens": 1024,
+                }
             )
 
-            return json.loads(response.choices[0].message.content)
+            try:
+                return json.loads(response.text)
+            except json.JSONDecodeError:
+                return {
+                    "error": "Response format error",
+                    "raw_response": response.text
+                }
 
         except Exception as e:
             print(f"Error in analyze_threat: {str(e)}")
@@ -61,16 +76,21 @@ class GPTHelper:
             Provide your analysis in the specified JSON format.
             """
 
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "user", "content": prompt}
-                ],
-                response_format={"type": "json_object"},
-                temperature=0.3,
+            response = self.model.generate_content(
+                prompt,
+                generation_config={
+                    "temperature": 0.3,
+                    "max_output_tokens": 512,
+                }
             )
 
-            return json.loads(response.choices[0].message.content)
+            try:
+                return json.loads(response.text)
+            except json.JSONDecodeError:
+                return {
+                    "error": "Response format error",
+                    "raw_response": response.text
+                }
 
         except Exception as e:
             print(f"Error in tag_threat_data: {str(e)}")
