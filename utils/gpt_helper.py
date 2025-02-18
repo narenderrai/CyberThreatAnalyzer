@@ -1,17 +1,19 @@
 import os
 import json
 from google.cloud import aiplatform
-from google.cloud.aiplatform import TextGenerationModel
+import vertexai
+from vertexai.language_models import TextGenerationModel
 
 class GPTHelper:
     def __init__(self):
         # Initialize Vertex AI with project details
-        aiplatform.init(
+        vertexai.init(
             project=os.environ.get("GOOGLE_CLOUD_PROJECT"),
             location=os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
         )
-        # Using PaLM 2 for Text model
+        # Initialize PaLM 2 Text model
         self.model = TextGenerationModel.from_pretrained("text-bison@002")
+        print("Initialized GPTHelper with Vertex AI PaLM 2 model")
 
     def analyze_threat(self, query, context=""):
         try:
@@ -47,6 +49,7 @@ class GPTHelper:
                 }
 
         except Exception as e:
+            print(f"Error in analyze_threat: {str(e)}")
             return {"error": f"Analysis failed: {str(e)}"}
 
     def tag_threat_data(self, data):
@@ -81,4 +84,5 @@ class GPTHelper:
                 }
 
         except Exception as e:
+            print(f"Error in tag_threat_data: {str(e)}")
             return {"error": f"Tagging failed: {str(e)}"}
