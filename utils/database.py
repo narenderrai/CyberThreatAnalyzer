@@ -23,11 +23,7 @@ class Database:
         self.initialize_connection()
 
     def initialize_connection(self):
-        if 'DATABASE_URL' not in os.environ:
-            raise EnvironmentError("DATABASE_URL environment variable is not set. Please enable the database in Replit's Database tool.")
-            
         retries = 3
-        delay = 2  # seconds between retries
         while retries > 0:
             try:
                 self.engine = create_engine(
@@ -35,11 +31,7 @@ class Database:
                     poolclass=NullPool,
                     connect_args={
                         'sslmode': 'require',
-                        'connect_timeout': 30,
-                        'keepalives': 1,
-                        'keepalives_idle': 30,
-                        'keepalives_interval': 10,
-                        'keepalives_count': 5
+                        'connect_timeout': 30
                     }
                 )
                 # Test the connection
@@ -48,7 +40,6 @@ class Database:
                 Base.metadata.create_all(self.engine)
                 session_factory = sessionmaker(bind=self.engine)
                 self.Session = scoped_session(session_factory)
-                print("Database connection established successfully")
                 return
             except Exception as e:
                 retries -= 1
