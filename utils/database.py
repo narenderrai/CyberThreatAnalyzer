@@ -23,25 +23,33 @@ class Database:
         self.initialize_connection()
 
     def initialize_connection(self):
-        try:
-            self.engine = create_engine(
-                os.environ['DATABASE_URL'],
-                poolclass=NullPool,
-                connect_args={
-                    'sslmode': 'require',
-                    'connect_timeout': 30
-                }
-            )
-            # Test the connection
-            with self.engine.connect() as conn:
-                conn.execute("SELECT 1")
-            Base.metadata.create_all(self.engine)
-            session_factory = sessionmaker(bind=self.engine)
-            self.Session = scoped_session(session_factory)
-        except Exception as e:
-            print(f"Database connection failed: {str(e)}")
-            print("Please ensure your database is enabled in the Replit Database tab")
-            raise
+        retries = 3
+        while retries > 0:
+            try:
+                self.engine = create_engine(
+                    os.environ['DATABASE_URL'],
+                    poolclass=NullPool,
+                    connect_args={
+                        'sslmode': 'require',
+                        'connect_timeout': 30
+                    }
+                )
+                # Test the connection
+                with self.engine.connect() as conn:
+                    conn.execute("SELECT 1")
+                Base.metadata.create_all(self.engine)
+                session_factory = sessionmaker(bind=self.engine)
+                self.Session = scoped_session(session_factory)
+                return
+            except Exception as e:
+                retries -= 1
+                if retries == 0:
+                    print(f"Database connection failed after 3 attempts: {str(e)}")
+                    print("Please ensure your database is enabled in the Replit Database tab")
+                    raise
+                print(f"Connection attempt failed, retrying... ({retries} attempts remaining)")
+                import time
+                time.sleep(2)
 
     def store_analysis(self, query, response, tags):
         session = self.Session()
