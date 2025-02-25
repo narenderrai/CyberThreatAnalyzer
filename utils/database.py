@@ -20,17 +20,28 @@ class ThreatAnalysis(Base):
 
 class Database:
     def __init__(self):
-        self.engine = create_engine(
-            os.environ['DATABASE_URL'],
-            poolclass=NullPool,  # Use NullPool instead of QueuePool
-            connect_args={
-                'sslmode': 'require',
-                'connect_timeout': 30
-            }
-        )
-        Base.metadata.create_all(self.engine)
-        session_factory = sessionmaker(bind=self.engine)
-        self.Session = scoped_session(session_factory)
+        self.initialize_connection()
+
+    def initialize_connection(self):
+        try:
+            self.engine = create_engine(
+                os.environ['DATABASE_URL'],
+                poolclass=NullPool,
+                connect_args={
+                    'sslmode': 'require',
+                    'connect_timeout': 30
+                }
+            )
+            # Test the connection
+            with self.engine.connect() as conn:
+                conn.execute("SELECT 1")
+            Base.metadata.create_all(self.engine)
+            session_factory = sessionmaker(bind=self.engine)
+            self.Session = scoped_session(session_factory)
+        except Exception as e:
+            print(f"Database connection failed: {str(e)}")
+            print("Please ensure your database is enabled in the Replit Database tab")
+            raise
 
     def store_analysis(self, query, response, tags):
         session = self.Session()
