@@ -9,6 +9,7 @@ from sqlalchemy.pool import NullPool  # Change to NullPool for better SSL handli
 
 Base = declarative_base()
 
+
 class ThreatAnalysis(Base):
     __tablename__ = 'threat_analyses'
 
@@ -18,7 +19,9 @@ class ThreatAnalysis(Base):
     response = Column(JSON, nullable=False)
     tags = Column(JSON, nullable=False)
 
+
 class Database:
+
     def __init__(self):
         self.initialize_connection()
 
@@ -26,14 +29,12 @@ class Database:
         retries = 3
         while retries > 0:
             try:
-                self.engine = create_engine(
-                    os.environ['DATABASE_URL'],
-                    poolclass=NullPool,
-                    connect_args={
-                        'sslmode': 'require',
-                        'connect_timeout': 30
-                    }
-                )
+                self.engine = create_engine(os.environ['DATABASE_URL'],
+                                            poolclass=NullPool,
+                                            connect_args={
+                                                'sslmode': 'require',
+                                                'connect_timeout': 30
+                                            })
                 # Test the connection
                 with self.engine.connect() as conn:
                     conn.execute("SELECT 1")
@@ -44,21 +45,25 @@ class Database:
             except Exception as e:
                 retries -= 1
                 if retries == 0:
-                    print(f"Database connection failed after 3 attempts: {str(e)}")
-                    print("Please ensure your database is enabled in the Replit Database tab")
+                    print(
+                        f"Database connection failed after 3 attempts: {str(e)}"
+                    )
+                    print(
+                        "Please ensure your database is enabled in the Replit Database tab"
+                    )
                     raise
-                print(f"Connection attempt failed, retrying... ({retries} attempts remaining)")
+                print(
+                    f"Connection attempt failed, retrying... ({retries} attempts remaining)"
+                )
                 import time
                 time.sleep(2)
 
     def store_analysis(self, query, response, tags):
         session = self.Session()
         try:
-            analysis = ThreatAnalysis(
-                query=query,
-                response=response,
-                tags=tags
-            )
+            analysis = ThreatAnalysis(query=query,
+                                      response=response,
+                                      tags=tags)
             session.add(analysis)
             session.commit()
             result = self._to_dict(analysis)
