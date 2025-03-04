@@ -1,0 +1,43 @@
+TypeError: unhashable type: 'dict'
+Traceback:
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/exec_code.py", line 121, in exec_func_with_error_handling
+    result = func()
+             ^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/streamlit/runtime/scriptrunner/script_runner.py", line 591, in code_to_exec
+    exec(code, module.__dict__)
+File "/home/runner/workspace/main.py", line 83, in <module>
+    main()
+File "/home/runner/workspace/main.py", line 52, in main
+    ThreatVisualizer.create_threat_timeline(df),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/components/visualization.py", line 18, in create_threat_timeline
+    fig = px.timeline(
+          ^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/plotly/express/_chart_types.py", line 432, in timeline
+    return make_figure(
+           ^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/plotly/express/_core.py", line 2494, in make_figure
+    groups, orders = get_groups_and_orders(args, grouper)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/plotly/express/_core.py", line 2428, in get_groups_and_orders
+    df.get_column(col).unique(maintain_order=True).to_list()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/narwhals/series.py", line 937, in unique
+    self._compliant_series.unique(maintain_order=maintain_order)
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/narwhals/_pandas_like/series.py", line 601, in unique
+    self._native_series.unique(), name=self._native_series.name
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pandas/core/series.py", line 2407, in unique
+    return super().unique()
+           ^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pandas/core/base.py", line 1025, in unique
+    result = algorithms.unique1d(values)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pandas/core/algorithms.py", line 401, in unique
+    return unique_with_mask(values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+File "/home/runner/workspace/.pythonlibs/lib/python3.11/site-packages/pandas/core/algorithms.py", line 440, in unique_with_mask
+    uniques = table.unique(values)
+              ^^^^^^^^^^^^^^^^^^^^
+File "pandas/_libs/hashtable_class_helper.pxi", line 7248, in pandas._libs.hashtable.PyObjectHashTable.unique
+File "pandas/_libs/hashtable_class_helper.pxi", line 7195, in pandas._libs.hash
