@@ -5,9 +5,20 @@ import pandas as pd
 class ThreatVisualizer:
     @staticmethod
     def create_threat_timeline(df):
+        # Create a copy of the dataframe
+        df_plot = df.copy()
+        
+        # Convert timestamp to datetime if it's not already
+        if not pd.api.types.is_datetime64_any_dtype(df_plot['timestamp']):
+            df_plot['timestamp'] = pd.to_datetime(df_plot['timestamp'])
+        
+        # Add end time (timestamp + 1 day) for timeline visualization
+        df_plot['end_time'] = df_plot['timestamp'] + pd.Timedelta(days=1)
+        
         fig = px.timeline(
-            df,
+            df_plot,
             x_start='timestamp',
+            x_end='end_time',
             y='query',
             color='tags',
             title='Threat Analysis Timeline'
