@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 import os
 import pandas as pd
-from sqlalchemy import create_engine, Column, Integer, String, DateTime, JSON
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, JSON, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.pool import QueuePool
@@ -27,9 +27,20 @@ class Database:
         if 'DATABASE_URL' not in os.environ:
             print("WARNING: DATABASE_URL not found. Using SQLite in-memory database for testing.")
             self.engine = create_engine('sqlite:///:memory:')
+            # Explicitly create all tables in the Base metadata
             Base.metadata.create_all(self.engine)
             session_factory = sessionmaker(bind=self.engine)
             self.Session = scoped_session(session_factory)
+            
+            # Verify tables are created
+            inspector = from sqlalchemy import inspect
+            inspector = inspect(self.engine)
+            tables = inspector.get_table_names()
+            print(f"Created tables: {tables}")
+            
+            if 'threat_analyses' not in tables:
+                print("Forcing table creation for ThreatAnalysis")
+                ThreatAnalysis.__table__.create(self.engine, checkfirst=True)
             return
             
         retries = 3
