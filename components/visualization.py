@@ -15,13 +15,36 @@ class ThreatVisualizer:
         # Add end time (timestamp + 1 day) for timeline visualization
         df_plot['end_time'] = df_plot['timestamp'] + pd.Timedelta(days=1)
         
+        # Extract severity level from tags dictionary for coloring
+        def extract_severity(tags_col):
+            if isinstance(tags_col, dict) and 'Severity Level' in tags_col:
+                return tags_col['Severity Level']
+            elif isinstance(tags_col, str):
+                try:
+                    tags_dict = eval(tags_col)
+                    if isinstance(tags_dict, dict) and 'Severity Level' in tags_dict:
+                        return tags_dict['Severity Level']
+                except:
+                    pass
+            return 'Unknown'
+        
+        # Add severity column for coloring
+        df_plot['severity'] = df_plot['tags'].apply(extract_severity)
+        
         fig = px.timeline(
             df_plot,
             x_start='timestamp',
             x_end='end_time',
             y='query',
-            color='tags',
-            title='Threat Analysis Timeline'
+            color='severity',  # Use the new severity column instead of tags
+            title='Threat Analysis Timeline',
+            color_discrete_map={
+                'Low': 'green',
+                'Medium': 'yellow',
+                'High': 'orange',
+                'Critical': 'red',
+                'Unknown': 'gray'
+            }
         )
         return fig
 
