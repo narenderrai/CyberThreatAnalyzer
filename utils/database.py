@@ -25,7 +25,12 @@ class Database:
 
     def initialize_connection(self):
         if 'DATABASE_URL' not in os.environ:
-            raise EnvironmentError("DATABASE_URL not found. Please create a database in the Replit Database tab.")
+            print("WARNING: DATABASE_URL not found. Using SQLite in-memory database for testing.")
+            self.engine = create_engine('sqlite:///:memory:')
+            Base.metadata.create_all(self.engine)
+            session_factory = sessionmaker(bind=self.engine)
+            self.Session = scoped_session(session_factory)
+            return
             
         retries = 3
         while retries > 0:
