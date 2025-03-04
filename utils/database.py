@@ -33,7 +33,7 @@ class Database:
             self.Session = scoped_session(session_factory)
             
             # Verify tables are created
-            inspector = from sqlalchemy import inspect
+            from sqlalchemy import inspect
             inspector = inspect(self.engine)
             tables = inspector.get_table_names()
             print(f"Created tables: {tables}")
