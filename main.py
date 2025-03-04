@@ -77,7 +77,7 @@ def main():
     for sample_query in SAMPLE_QUERIES:
         if st.button(sample_query):
             st.session_state['query'] = sample_query
-            st.experimental_rerun()
+            st.rerun()
 
 if __name__ == "__main__":
     main()

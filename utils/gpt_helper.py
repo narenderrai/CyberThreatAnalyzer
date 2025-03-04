@@ -1,8 +1,63 @@
 import os
 import json
+import random
+from datetime import datetime
 from google.cloud import aiplatform
 import vertexai
 from vertexai.generative_models import GenerativeModel
+
+class GPTHelper:
+    def __init__(self):
+        project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
+        if not project_id:
+            print("GOOGLE_CLOUD_PROJECT environment variable not set, using mock mode")
+            self.mock_mode = True
+        else:
+            self.mock_mode = False
+            vertexai.init(project=project_id)
+            self.model = GenerativeModel("gemini-pro")
+    
+    def analyze_threat(self, query):
+        if self.mock_mode:
+            return self._generate_mock_response(query)
+        
+        # Real implementation would go here
+        response = self.model.generate_content(query)
+        return response.text
+    
+    def tag_threat_data(self, response_text):
+        if self.mock_mode:
+            return self._generate_mock_tags()
+        
+        # Real implementation would go here
+        # This would use the model to generate tags based on the response
+        prompt = f"Extract threat intelligence tags from this text: {response_text}"
+        response = self.model.generate_content(prompt)
+        # Parse the response to extract tags
+        # This is a placeholder and should be implemented based on actual response format
+        return json.loads(response.text) if response.text else {}
+    
+    def _generate_mock_response(self, query):
+        mock_responses = [
+            f"Analysis of '{query}': This appears to be a sophisticated phishing campaign targeting financial institutions.",
+            f"Regarding '{query}': Evidence suggests this is a ransomware attack with similarities to previous campaigns by APT29.",
+            f"Investigation of '{query}': The indicators point to a supply chain attack affecting multiple organizations.",
+            f"Threat intelligence on '{query}': This matches patterns of a zero-day vulnerability exploitation in common web frameworks."
+        ]
+        return random.choice(mock_responses)
+    
+    def _generate_mock_tags(self):
+        severity_levels = ["Low", "Medium", "High", "Critical"]
+        attack_vectors = ["Phishing", "Ransomware", "Supply Chain", "Zero-day", "Social Engineering"]
+        threat_actors = ["APT29", "Lazarus Group", "Sandworm", "Unknown"]
+        
+        return {
+            "Severity Level": random.choice(severity_levels),
+            "Attack Vector": random.choice(attack_vectors),
+            "Threat Actor": random.choice(threat_actors),
+            "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Confidence": f"{random.randint(60, 95)}%"
+        }
 
 class GPTHelper:
     def __init__(self):
