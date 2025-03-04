@@ -25,9 +25,11 @@ class Database:
 
     def initialize_connection(self):
         if 'DATABASE_URL' not in os.environ:
-            print("WARNING: DATABASE_URL not found. Using SQLite in-memory database for testing.")
-            self.engine = create_engine('sqlite:///:memory:')
-            # Explicitly create all tables in the Base metadata
+            print("WARNING: DATABASE_URL not found. Using SQLite file database for testing.")
+            # Use a file-based SQLite database instead of in-memory
+            self.engine = create_engine('sqlite:///threat_database.db')
+            
+            # Make sure the ThreatAnalysis table is created
             Base.metadata.create_all(self.engine)
             session_factory = sessionmaker(bind=self.engine)
             self.Session = scoped_session(session_factory)
@@ -41,6 +43,10 @@ class Database:
             if 'threat_analyses' not in tables:
                 print("Forcing table creation for ThreatAnalysis")
                 ThreatAnalysis.__table__.create(self.engine, checkfirst=True)
+                
+                # Verify tables again after forcing creation
+                tables = inspector.get_table_names()
+                print(f"Tables after forced creation: {tables}")
             return
             
         retries = 3
