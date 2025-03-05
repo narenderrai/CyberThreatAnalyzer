@@ -22,15 +22,9 @@ def main():
     render_header()
     analysis_type, export_format = render_sidebar()
     
-    # OpenAI API key configuration
-    with st.sidebar.expander("API Configuration"):
-        api_key = st.text_input("OpenAI API Key", type="password")
-        if api_key:
-            os.environ["OPENAI_API_KEY"] = api_key
-            if 'gpt_helper' in st.session_state:
-                # Re-initialize GPT helper with the new API key
-                st.session_state.gpt_helper = GPTHelper()
-            st.sidebar.success("API key configured successfully!")
+    # API Configuration Info
+    with st.sidebar.expander("API Information"):
+        st.info("OpenAI API is configured on the backend. Contact the administrator for API access.")
     
     # Main content area
     query = render_query_section(PROMPT_TEMPLATES)

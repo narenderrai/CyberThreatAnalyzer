@@ -23,18 +23,8 @@ def render_sidebar():
         ["csv", "json"]
     )
 
-    model_type = st.sidebar.radio(
-        "Model Provider",
-        ["OpenAI GPT", "Google Vertex AI (Gemini)", "Mock Data"]
-    )
-
-    if model_type == "OpenAI GPT":
-        model_name = st.sidebar.selectbox(
-            "GPT Model",
-            ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"]
-        )
-        if model_name:
-            os.environ["OPENAI_MODEL"] = model_name
+    # No model selection shown to end users
+    # API configuration happens server-side
 
     return analysis_type, export_format
 
