@@ -6,8 +6,6 @@ def render_header():
     st.markdown("""
     This platform helps security analysts understand, categorize, and respond to cyber threats.
     Use the query input section to ask about specific threats or browse the sample queries.
-
-    **API Integration**: This platform supports both OpenAI GPT and Google Vertex AI. Configure your API keys in the sidebar.
     """)
 
 def render_sidebar():

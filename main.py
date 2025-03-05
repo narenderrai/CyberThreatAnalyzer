@@ -22,10 +22,6 @@ def main():
     render_header()
     analysis_type, export_format = render_sidebar()
     
-    # API Configuration Info
-    with st.sidebar.expander("API Information"):
-        st.info("OpenAI API is configured on the backend. Contact the administrator for API access.")
-    
     # Main content area
     query = render_query_section(PROMPT_TEMPLATES)
     
