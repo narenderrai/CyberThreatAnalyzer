@@ -5,15 +5,30 @@ from datetime import datetime
 from google.cloud import aiplatform
 import vertexai
 from vertexai.generative_models import GenerativeModel
+import openai
 
 class GPTHelper:
     def __init__(self):
+        # Check for OpenAI API key
+        self.openai_api_key = os.environ.get('OPENAI_API_KEY')
+        if self.openai_api_key:
+            print("Using OpenAI GPT model")
+            self.use_openai = True
+            self.use_mock = False
+            openai.api_key = self.openai_api_key
+            # Default to GPT-3.5-turbo, but can be configured
+            self.openai_model = os.environ.get('OPENAI_MODEL', 'gpt-3.5-turbo')
+            return
+            
+        # Fall back to Google Vertex AI if OpenAI not configured
         project_id = os.environ.get('GOOGLE_CLOUD_PROJECT')
         if not project_id:
-            print("GOOGLE_CLOUD_PROJECT environment variable not set, using mock mode")
+            print("Neither OPENAI_API_KEY nor GOOGLE_CLOUD_PROJECT environment variables are set, using mock mode")
             self.use_mock = True
+            self.use_openai = False
         else:
             self.use_mock = False
+            self.use_openai = False
             vertexai.init(project=project_id)
             self.model = GenerativeModel("gemini-pro")
     
@@ -207,25 +222,49 @@ class GPTHelper:
 
             Please provide your analysis in the specified JSON format.
             """
+            
+            if hasattr(self, 'use_openai') and self.use_openai:
+                print(f"Sending request to OpenAI ({self.openai_model})...")
+                completion = openai.chat.completions.create(
+                    model=self.openai_model,
+                    messages=[
+                        {"role": "system", "content": "You are a cybersecurity expert analyzing threat data."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.3,
+                    max_tokens=1024
+                )
+                
+                response_text = completion.choices[0].message.content
+                print(f"Raw response from OpenAI: {response_text}")
+                
+                try:
+                    return json.loads(response_text)
+                except json.JSONDecodeError:
+                    print(f"Failed to parse OpenAI response as JSON: {response_text}")
+                    return {
+                        "error": "Response format error",
+                        "raw_response": response_text
+                    }
+            else:
+                print("Sending request to Vertex AI...")
+                response = self.model.generate_content(
+                    prompt,
+                    generation_config={
+                        "temperature": 0.3,
+                        "max_output_tokens": 1024,
+                    }
+                )
+                print(f"Raw response from Vertex AI: {response.text}")
 
-            print("Sending request to Vertex AI...")
-            response = self.model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.3,
-                    "max_output_tokens": 1024,
-                }
-            )
-            print(f"Raw response from Vertex AI: {response.text}")
-
-            try:
-                return json.loads(response.text)
-            except json.JSONDecodeError:
-                print(f"Failed to parse response as JSON: {response.text}")
-                return {
-                    "error": "Response format error",
-                    "raw_response": response.text
-                }
+                try:
+                    return json.loads(response.text)
+                except json.JSONDecodeError:
+                    print(f"Failed to parse response as JSON: {response.text}")
+                    return {
+                        "error": "Response format error",
+                        "raw_response": response.text
+                    }
 
         except Exception as e:
             print(f"Error in analyze_threat: {str(e)}")
@@ -286,24 +325,48 @@ class GPTHelper:
             Provide your analysis in the specified JSON format.
             """
 
-            print("Sending request to Vertex AI for tagging...")
-            response = self.model.generate_content(
-                prompt,
-                generation_config={
-                    "temperature": 0.3,
-                    "max_output_tokens": 512,
-                }
-            )
-            print(f"Raw tagging response from Vertex AI: {response.text}")
+            if hasattr(self, 'use_openai') and self.use_openai:
+                print(f"Sending request to OpenAI ({self.openai_model}) for tagging...")
+                completion = openai.chat.completions.create(
+                    model=self.openai_model,
+                    messages=[
+                        {"role": "system", "content": "You are a cybersecurity expert analyzing threat data."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    temperature=0.3,
+                    max_tokens=512
+                )
+                
+                response_text = completion.choices[0].message.content
+                print(f"Raw tagging response from OpenAI: {response_text}")
+                
+                try:
+                    return json.loads(response_text)
+                except json.JSONDecodeError:
+                    print(f"Failed to parse OpenAI tagging response as JSON: {response_text}")
+                    return {
+                        "error": "Response format error",
+                        "raw_response": response_text
+                    }
+            else:
+                print("Sending request to Vertex AI for tagging...")
+                response = self.model.generate_content(
+                    prompt,
+                    generation_config={
+                        "temperature": 0.3,
+                        "max_output_tokens": 512,
+                    }
+                )
+                print(f"Raw tagging response from Vertex AI: {response.text}")
 
-            try:
-                return json.loads(response.text)
-            except json.JSONDecodeError:
-                print(f"Failed to parse tagging response as JSON: {response.text}")
-                return {
-                    "error": "Response format error",
-                    "raw_response": response.text
-                }
+                try:
+                    return json.loads(response.text)
+                except json.JSONDecodeError:
+                    print(f"Failed to parse tagging response as JSON: {response.text}")
+                    return {
+                        "error": "Response format error",
+                        "raw_response": response.text
+                    }
 
         except Exception as e:
             print(f"Error in tag_threat_data: {str(e)}")

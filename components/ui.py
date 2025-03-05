@@ -1,40 +1,48 @@
 import streamlit as st
+import os # Added for environment variable handling
 
 def render_header():
+    st.title("Cyber Threat Analysis Platform")
     st.markdown("""
-    <style>
-    .header {
-        padding: 1rem;
-        background-color: #262730;
-        border-radius: 5px;
-        margin-bottom: 2rem;
-    }
-    </style>
-    <div class="header">
-        <h1>GPT Cyber Threat Analyzer</h1>
-        <p>Analyze and tag cyber threat data using advanced AI</p>
-    </div>
-    """, unsafe_allow_html=True)
+    This platform helps security analysts understand, categorize, and respond to cyber threats.
+    Use the query input section to ask about specific threats or browse the sample queries.
+
+    **API Integration**: This platform supports both OpenAI GPT and Google Vertex AI. Configure your API keys in the sidebar.
+    """)
 
 def render_sidebar():
-    st.sidebar.title("Analysis Options")
+    st.sidebar.title("Settings")
+
     analysis_type = st.sidebar.selectbox(
-        "Select Analysis Type",
-        ["Custom Query", "Timeline Analysis", "Attack Vector Analysis", "TTP Analysis"]
+        "Analysis Type",
+        ["Timeline", "Attack Vectors", "TTPs", "Recent Threats"]
     )
-    
+
     export_format = st.sidebar.selectbox(
         "Export Format",
-        ["CSV", "JSON"]
+        ["csv", "json"]
     )
-    
-    return analysis_type, export_format.lower()
+
+    model_type = st.sidebar.radio(
+        "Model Provider",
+        ["OpenAI GPT", "Google Vertex AI (Gemini)", "Mock Data"]
+    )
+
+    if model_type == "OpenAI GPT":
+        model_name = st.sidebar.selectbox(
+            "GPT Model",
+            ["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo"]
+        )
+        if model_name:
+            os.environ["OPENAI_MODEL"] = model_name
+
+    return analysis_type, export_format
 
 def render_query_section(templates):
     st.subheader("Query Input")
-    
+
     use_template = st.checkbox("Use Template")
-    
+
     if use_template:
         template_key = st.selectbox(
             "Select Template",
@@ -50,16 +58,16 @@ def render_query_section(templates):
             params["threat_actor"] = st.text_input("Threat Actor")
         if "{threat_name}" in template:
             params["threat_name"] = st.text_input("Threat Name")
-            
+
         query = template.format(**params) if params else template
     else:
         query = st.text_area("Enter your query")
-    
+
     return query
 
 def render_response(response, tags):
     st.subheader("Analysis Results")
-    
+
     with st.expander("Response Details", expanded=True):
         if isinstance(response, dict):
             for key, value in response.items():
@@ -67,7 +75,7 @@ def render_response(response, tags):
                 st.write(value)
         else:
             st.write(response)
-    
+
     with st.expander("Tags", expanded=True):
         if isinstance(tags, dict):
             for key, value in tags.items():
