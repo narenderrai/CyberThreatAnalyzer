@@ -6,15 +6,16 @@ from openai import OpenAI
 class GPTHelper:
 
     def __init__(self):
-        # Set OpenRouter API key directly
-        self.openai_api_key = "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"
+        # Get API key from environment variable or use default
+        self.openai_api_key = os.environ.get("OPENROUTER_API_KEY", "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")
 
         print("Using OpenRouter API")
         self.client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=self.openai_api_key,
         )
-        self.openai_model = os.environ.get('deepseek/deepseek-r1:free')
+        # Set a default model for OpenRouter - this was causing the "No models provided" error
+        self.openai_model = "deepseek/deepseek-coder:latest"
 
     def _send_request(self, prompt):
         try:
