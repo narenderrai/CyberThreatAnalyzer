@@ -15,7 +15,7 @@ class GPTHelper:
             api_key=self.openai_api_key,
         )
         # Set a default model for OpenRouter - this was causing the "No models provided" error
-        self.openai_model = "deepseek/deepseek-coder:latest"
+        self.openai_model = "deepseek/deepseek-r1-zero:free"
 
     def _send_request(self, prompt):
         try:
