@@ -6,10 +6,12 @@ from openai import OpenAI
 class GPTHelper:
 
     def __init__(self):
-        # Get API key from environment or use default
-        api_key = os.environ.get(
-            "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"
-        )
+        # Get API key from environment variable
+        api_key = os.environ.get("OPENROUTER_API_KEY")
+        
+        if not api_key:
+            print("WARNING: OPENROUTER_API_KEY not found in environment variables")
+            api_key = "your-api-key-here"  # This will cause an error to remind you to set the key
 
         print("Using OpenRouter API")
         self.client = OpenAI(
