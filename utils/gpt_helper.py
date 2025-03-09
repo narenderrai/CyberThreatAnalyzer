@@ -7,8 +7,9 @@ class GPTHelper:
 
     def __init__(self):
         # Get API key from environment or use default
-        api_key = os.environ.get("OPENROUTER_API_KEY", 
-                  "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")
+        api_key = os.environ.get(
+            "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"
+        )
 
         print("Using OpenRouter API")
         self.client = OpenAI(
@@ -42,28 +43,31 @@ class GPTHelper:
 
             response_text = completion.choices[0].message.content.strip()
             print(f"Raw response from OpenRouter: {response_text}")
-            
+
             # Try to extract JSON from markdown code blocks if present
             if response_text.startswith("```json") and "```" in response_text:
-                json_content = response_text.split("```json", 1)[1].split("```", 1)[0].strip()
+                json_content = response_text.split("```json",
+                                                   1)[1].split("```",
+                                                               1)[0].strip()
                 try:
                     return json.loads(json_content)
                 except json.JSONDecodeError:
                     pass  # Fall back to the next parsing attempt
-            
+
             # Try to parse the entire response as JSON
             try:
                 return json.loads(response_text)
             except json.JSONDecodeError:
                 # Return a structured response with the raw text
                 return {
-                    "attack_vector": "Analysis unavailable in structured format",
+                    "attack_vector":
+                    "Analysis unavailable in structured format",
                     "timeline": "See raw analysis below",
                     "impact": "Review raw analysis for details",
                     "mitigation": "Review raw analysis for details",
                     "raw_analysis": response_text
                 }
-                
+
         except Exception as e:
             print(f"Error in OpenRouter request: {str(e)}")
             return {"error": f"Request failed: {str(e)}"}
