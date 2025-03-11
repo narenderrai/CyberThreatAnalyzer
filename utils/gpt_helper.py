@@ -7,7 +7,7 @@ class GPTHelper:
 
     def __init__(self):
         # Get API key from environment variable or use default
-        self.openai_api_key = os.environ.get("OPENROUTER_API_KEY", "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")
+        self.openai_api_key = os.environ.get("OPENROUTER_API_KEY", "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")
 
         print("Using OpenRouter API")
         self.client = OpenAI(
