@@ -24,7 +24,7 @@ class GPTHelper:
             base_url="https://openrouter.ai/api/v1",
             api_key=self.openai_api_key,
             default_headers={
-                "HTTP-Referer": "https://replit.com/",  # Optional: Helps OpenRouter with analytics
+                "HTTP-Referer": "https://replit.com/",  # Required by OpenRouter
                 "X-Title": "Cyber Threat Analysis Platform"  # Optional: Application name
             }
         )
@@ -44,21 +44,14 @@ class GPTHelper:
             completion = self.client.chat.completions.create(
                 model=self.openai_model,
                 messages=[{
-                    "role":
-                    "system",
-                    "content":
-                    "You are a cybersecurity expert analyzing threat data."
+                    "role": "system",
+                    "content": "You are a cybersecurity expert analyzing threat data."
                 }, {
                     "role": "user",
                     "content": prompt
                 }],
                 temperature=0.3,
-                max_tokens=1024,
-                extra_headers={
-                    "HTTP-Referer": os.environ.get("YOUR_SITE_URL", ""),
-                    "X-Title": os.environ.get("YOUR_SITE_NAME", "")
-                },
-                extra_body={})
+                max_tokens=1024)
 
             response_text = completion.choices[0].message.content.strip()
             print(f"Raw response from OpenRouter: {response_text}")
