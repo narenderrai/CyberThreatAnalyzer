@@ -58,15 +58,31 @@ def render_response(response, tags):
 
     with st.expander("Response Details", expanded=True):
         if isinstance(response, dict):
-            for key, value in response.items():
-                st.markdown(f"**{key}:**")
-                st.write(value)
+            # Check if it's an error response
+            if "error" in response and "raw_response" in response:
+                st.error(f"Error: {response['error']}")
+                if response['raw_response']:
+                    st.text_area("Raw Response", response['raw_response'], height=300)
+            else:
+                # Normal dictionary response
+                for key, value in response.items():
+                    st.markdown(f"**{key}:**")
+                    st.write(value)
         else:
-            st.write(response)
+            # Handle string or other type responses
+            st.text_area("Response", str(response), height=300)
 
     with st.expander("Tags", expanded=True):
         if isinstance(tags, dict):
-            for key, value in tags.items():
-                st.markdown(f"**{key}:** {value}")
+            # Check if it's an error response in tags
+            if "error" in tags and "raw_response" in tags:
+                st.error(f"Error: {tags['error']}")
+                if tags['raw_response']:
+                    st.text_area("Raw Tags Response", tags['raw_response'], height=300)
+            else:
+                # Normal dictionary tags
+                for key, value in tags.items():
+                    st.markdown(f"**{key}:** {value}")
         else:
-            st.write(tags)
+            # Handle string or other type tags
+            st.text_area("Tags", str(tags), height=300)

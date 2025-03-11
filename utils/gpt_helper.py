@@ -41,15 +41,17 @@ class GPTHelper:
 
             response_text = completion.choices[0].message.content.strip()
             print(f"Raw response from OpenRouter: {response_text}")
-            return json.loads(response_text)
-        except json.JSONDecodeError:
-            print(
-                f"Failed to parse OpenRouter response as JSON: {response_text}"
-            )
-            return {
-                "error": "Response format error",
-                "raw_response": response_text
-            }
+            
+            # Try to parse as JSON, but return formatted text if it fails
+            try:
+                return json.loads(response_text)
+            except json.JSONDecodeError:
+                print(f"Failed to parse OpenRouter response as JSON, displaying as text")
+                # Create a structured response with text sections
+                return {
+                    "Analysis": response_text,
+                    "Note": "Response was not in JSON format as requested, showing raw text instead."
+                }
         except Exception as e:
             print(f"Error in OpenRouter request: {str(e)}")
             return {"error": f"Request failed: {str(e)}"}
@@ -58,7 +60,8 @@ class GPTHelper:
         print(f"\nAnalyzing threat query: {query}")
         prompt = f"""You are a cybersecurity expert analyzing threat data. 
         Provide detailed, factual responses about cyber threats, attack vectors, and TTPs.
-        Format your response as JSON with the following structure:
+        
+        IMPORTANT: Your response MUST be in valid JSON format with the following structure:
         {{
             "attack_vector": "Description of attack methods",
             "timeline": "Progression of the attack",
@@ -69,7 +72,7 @@ class GPTHelper:
         Context: {context}
         Query: {query}
 
-        Please provide your analysis in the specified JSON format.
+        IMPORTANT: Ensure your response is valid JSON that can be parsed with json.loads(). Do not include markdown, backticks, or any text outside of the JSON structure.
         """
 
         return self._send_request(prompt)
@@ -77,7 +80,8 @@ class GPTHelper:
     def tag_threat_data(self, data):
         print(f"\nTagging threat data: {data}")
         prompt = f"""Tag the following cyber threat data with relevant categories.
-        Respond in JSON format with these fields: 
+        
+        IMPORTANT: Your response MUST be in valid JSON format with these fields: 
         {{
             "TTP": "List of tactics, techniques, and procedures",
             "attack_vector": "Primary attack methods used",
@@ -88,7 +92,7 @@ class GPTHelper:
 
         Data to analyze: {data}
 
-        Provide your analysis in the specified JSON format.
+        IMPORTANT: Ensure your response is valid JSON that can be parsed with json.loads(). Do not include markdown, backticks, or any text outside of the JSON structure.
         """
 
         return self._send_request(prompt)
