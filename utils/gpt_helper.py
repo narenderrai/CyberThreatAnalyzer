@@ -42,10 +42,7 @@ class GPTHelper:
             
         try:
             print(f"Sending request to OpenRouter ({self.openai_model})...")
-            headers = {
-                "Authorization": f"Bearer {self.openai_api_key}"
-            }
-            
+            # The OpenAI client already has the API key set, no need for extra headers
             completion = self.client.chat.completions.create(
                 model=self.openai_model,
                 messages=[{
@@ -56,8 +53,7 @@ class GPTHelper:
                     "content": prompt
                 }],
                 temperature=0.3,
-                max_tokens=1024,
-                headers=headers)
+                max_tokens=1024)
 
             response_text = completion.choices[0].message.content.strip()
             print(f"Raw response from OpenRouter: {response_text}")
