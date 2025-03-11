@@ -20,12 +20,13 @@ class GPTHelper:
             self.openai_api_key = "missing_key"
 
         print("Using OpenRouter API")
+        # OpenRouter requires API key in Authorization header format
         self.client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=self.openai_api_key,
             default_headers={
-                "HTTP-Referer": "https://replit.com/",  # Required by OpenRouter
-                "X-Title": "Cyber Threat Analysis Platform"  # Optional: Application name
+                "HTTP-Referer": "https://replit.com/",
+                "X-Title": "Cyber Threat Analysis Platform"
             }
         )
         # Set a default model for OpenRouter - this was causing the "No models provided" error
@@ -41,6 +42,10 @@ class GPTHelper:
             
         try:
             print(f"Sending request to OpenRouter ({self.openai_model})...")
+            headers = {
+                "Authorization": f"Bearer {self.openai_api_key}"
+            }
+            
             completion = self.client.chat.completions.create(
                 model=self.openai_model,
                 messages=[{
@@ -51,7 +56,8 @@ class GPTHelper:
                     "content": prompt
                 }],
                 temperature=0.3,
-                max_tokens=1024)
+                max_tokens=1024,
+                headers=headers)
 
             response_text = completion.choices[0].message.content.strip()
             print(f"Raw response from OpenRouter: {response_text}")
