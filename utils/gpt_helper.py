@@ -9,7 +9,11 @@ class GPTHelper:
         # Get API key from environment variable or prompt user if not found
         self.openai_api_key = os.environ.get("OPENROUTER_API_KEY")
         
-        if not self.openai_api_key:
+        # Debug output to verify API key
+        if self.openai_api_key:
+            masked_key = self.openai_api_key[:4] + "..." + self.openai_api_key[-4:] if len(self.openai_api_key) > 8 else "***"
+            print(f"Found OpenRouter API key: {masked_key}")
+        else:
             print("WARNING: No OpenRouter API key found. API calls will fail.")
             print("Please set your OPENROUTER_API_KEY as an environment variable.")
             # Default key for initialization, but it won't work for actual API calls
@@ -19,6 +23,10 @@ class GPTHelper:
         self.client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=self.openai_api_key,
+            default_headers={
+                "HTTP-Referer": "https://replit.com/",  # Optional: Helps OpenRouter with analytics
+                "X-Title": "Cyber Threat Analysis Platform"  # Optional: Application name
+            }
         )
         # Set a default model for OpenRouter - this was causing the "No models provided" error
         self.openai_model = "deepseek/deepseek-r1-zero:free"
