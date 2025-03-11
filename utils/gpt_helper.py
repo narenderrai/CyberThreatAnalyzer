@@ -6,8 +6,14 @@ from openai import OpenAI
 class GPTHelper:
 
     def __init__(self):
-        # Get API key from environment variable or use default
-        self.openai_api_key = os.environ.get("OPENROUTER_API_KEY", "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")
+        # Get API key from environment variable or prompt user if not found
+        self.openai_api_key = os.environ.get("OPENROUTER_API_KEY")
+        
+        if not self.openai_api_key:
+            print("WARNING: No OpenRouter API key found. API calls will fail.")
+            print("Please set your OPENROUTER_API_KEY as an environment variable.")
+            # Default key for initialization, but it won't work for actual API calls
+            self.openai_api_key = "missing_key"
 
         print("Using OpenRouter API")
         self.client = OpenAI(
@@ -18,6 +24,13 @@ class GPTHelper:
         self.openai_model = "deepseek/deepseek-r1-zero:free"
 
     def _send_request(self, prompt):
+        if not self.openai_api_key or self.openai_api_key == "missing_key":
+            return {
+                "error": "OpenRouter API key not set. Please set the OPENROUTER_API_KEY environment variable.",
+                "raw_response": "",
+                "setup_instructions": "Go to Secrets Tool in Replit and add your OPENROUTER_API_KEY"
+            }
+            
         try:
             print(f"Sending request to OpenRouter ({self.openai_model})...")
             completion = self.client.chat.completions.create(
@@ -54,7 +67,11 @@ class GPTHelper:
                 }
         except Exception as e:
             print(f"Error in OpenRouter request: {str(e)}")
-            return {"error": f"Request failed: {str(e)}"}
+            return {
+                "error": f"Request failed: {str(e)}",
+                "raw_response": "",
+                "setup_instructions": "Verify your OpenRouter API key is valid and properly configured."
+            }
 
     def analyze_threat(self, query, context=""):
         print(f"\nAnalyzing threat query: {query}")

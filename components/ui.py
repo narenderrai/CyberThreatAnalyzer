@@ -59,10 +59,25 @@ def render_response(response, tags):
     with st.expander("Response Details", expanded=True):
         if isinstance(response, dict):
             # Check if it's an error response
-            if "error" in response and "raw_response" in response:
+            if "error" in response:
                 st.error(f"Error: {response['error']}")
-                if response['raw_response']:
+                if 'raw_response' in response and response['raw_response']:
                     st.text_area("Raw Response", response['raw_response'], height=300)
+                
+                # Display setup instructions if available
+                if 'setup_instructions' in response:
+                    st.warning("Setup Instructions:")
+                    st.info(response['setup_instructions'])
+                    
+                    # Add a button to open Secrets tool
+                    if "API key" in response['error'].lower() or "OPENROUTER_API_KEY" in response['error']:
+                        st.markdown("""
+                        ### How to set your API key:
+                        1. Click on the **Tools** button in the left sidebar
+                        2. Select **Secrets**
+                        3. Add a new secret with key `OPENROUTER_API_KEY` and your API key as the value
+                        4. Restart your application
+                        """)
             else:
                 # Normal dictionary response
                 for key, value in response.items():
@@ -75,10 +90,15 @@ def render_response(response, tags):
     with st.expander("Tags", expanded=True):
         if isinstance(tags, dict):
             # Check if it's an error response in tags
-            if "error" in tags and "raw_response" in tags:
+            if "error" in tags:
                 st.error(f"Error: {tags['error']}")
-                if tags['raw_response']:
+                if 'raw_response' in tags and tags['raw_response']:
                     st.text_area("Raw Tags Response", tags['raw_response'], height=300)
+                
+                # Display setup instructions if available
+                if 'setup_instructions' in tags:
+                    st.warning("Setup Instructions:")
+                    st.info(tags['setup_instructions'])
             else:
                 # Normal dictionary tags
                 for key, value in tags.items():
