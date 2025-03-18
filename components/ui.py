@@ -68,6 +68,19 @@ def render_response(response, tags):
                 if 'setup_instructions' in response:
                     st.warning("Setup Instructions:")
                     st.info(response['setup_instructions'])
+            elif "status" in response and response["status"] == "success":
+                st.success("API Response received successfully")
+                
+                if response["format"] == "json":
+                    st.json(response["data"])
+                elif response["format"] == "text":
+                    st.markdown("### Analysis Content")
+                    st.write(response["data"]["content"])
+                    
+                    if "sections" in response["data"]:
+                        st.markdown("### Sections")
+                        for section in response["data"]["sections"]:
+                            st.text(section)
                     
                     # Add a button to open Secrets tool
                     if "API key" in response['error'].lower() or "OPENROUTER_API_KEY" in response['error']:

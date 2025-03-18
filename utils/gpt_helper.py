@@ -58,15 +58,24 @@ class GPTHelper:
             response_text = completion.choices[0].message.content.strip()
             print(f"Raw response from OpenRouter: {response_text}")
             
-            # Try to parse as JSON, but return formatted text if it fails
+            # Try to parse as JSON
             try:
-                return json.loads(response_text)
-            except json.JSONDecodeError:
-                print(f"Failed to parse OpenRouter response as JSON, displaying as text")
-                # Create a structured response with text sections
+                json_response = json.loads(response_text)
                 return {
-                    "Analysis": response_text,
-                    "Note": "Response was not in JSON format as requested, showing raw text instead."
+                    "status": "success",
+                    "format": "json",
+                    "data": json_response
+                }
+            except json.JSONDecodeError:
+                print(f"Failed to parse OpenRouter response as JSON, formatting as text")
+                # Structure the text response
+                return {
+                    "status": "success",
+                    "format": "text",
+                    "data": {
+                        "content": response_text,
+                        "sections": [s.strip() for s in response_text.split('\n\n') if s.strip()]
+                    }
                 }
         except Exception as e:
             print(f"Error in OpenRouter request: {str(e)}")
