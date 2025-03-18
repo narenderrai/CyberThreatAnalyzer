@@ -70,7 +70,7 @@ class ThreatAnalyzer:
         return self.db.export_analysis(format)
 
     def generate_threat_report(self, analysis_data):
-        """Generate a formatted threat analysis report."""
+        """Generate a complete formatted threat analysis report."""
         
         report = []
         report.append("📊 THREAT ANALYSIS REPORT")
@@ -80,8 +80,17 @@ class ThreatAnalyzer:
         if 'api_response' in analysis_data:
             api_data = analysis_data['api_response']
             
-            if isinstance(api_data, dict) and 'data' in api_data:
-                data = api_data['data']
+            # Handle both JSON and text responses
+            if isinstance(api_data, dict):
+                if 'data' in api_data:
+                    data = api_data['data']
+                elif 'content' in api_data:
+                    try:
+                        # Try parsing content as JSON
+                        import json
+                        data = json.loads(api_data['content'].replace('\\boxed{', '').replace('}', ''))
+                    except:
+                        data = {'content': api_data['content']}
                 
                 if 'attack_vector' in data:
                     report.append("\n🎯 Attack Vector Analysis")

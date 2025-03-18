@@ -59,6 +59,11 @@ def render_response(response, tags):
             elif "status" in response and response["status"] == "success":
                 st.success("Analysis Complete")
 
+                # Display full response in expandable section
+                with st.expander("🔍 View Raw Analysis Data"):
+                    import json
+                    st.code(json.dumps(response, indent=2), language='json')
+
                 if response["format"] == "json":
                     data = response["data"]
                     st.markdown("## 📊 Threat Analysis Report")
@@ -146,7 +151,7 @@ def render_response(response, tags):
                 # Display the current analysis report
                 report = st.session_state.threat_analyzer.generate_threat_report(response)
                 st.markdown(report)
-                
+
                 # Display historical analysis in an expander
                 with st.expander("📚 View Historical Analysis"):
                     history_df = st.session_state.threat_analyzer.get_historical_analysis()
