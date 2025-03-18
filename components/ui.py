@@ -61,35 +61,46 @@ def render_response(response, tags):
 
                 if response["format"] == "json":
                     data = response["data"]
+                    st.markdown("## 📊 Threat Analysis Report")
+                    st.markdown("---")
                     
                     if "attack_vector" in data:
                         st.markdown("### 🎯 Attack Vector Analysis")
-                        st.markdown(data["attack_vector"].replace('\\boxed{', '').replace('}', ''))
-                        st.markdown("---")
+                        cleaned_text = data["attack_vector"].replace('\\boxed{', '').replace('}', '')
+                        vectors = cleaned_text.split(". ")
+                        for vector in vectors:
+                            if vector.strip():
+                                st.markdown(f"• {vector.strip()}")
+                        st.markdown("")
 
                     if "timeline" in data:
                         st.markdown("### ⏱️ Attack Timeline")
                         timeline_text = data["timeline"].replace('\\boxed{', '').replace('}', '')
-                        steps = timeline_text.split(". ")
-                        for step in steps:
-                            if step.strip():
-                                st.markdown(f"• {step.strip()}")
-                        st.markdown("---")
+                        steps = [step for step in timeline_text.split(". ") if step.strip()]
+                        
+                        for i, step in enumerate(steps, 1):
+                            step = step.lstrip("123456789. ")
+                            st.markdown(f"**{i}.** {step}")
+                        st.markdown("")
 
                     if "impact" in data:
                         st.markdown("### 💥 Potential Impact")
-                        impacts = data["impact"].replace('\\boxed{', '').replace('}', '').split(", ")
+                        cleaned_text = data["impact"].replace('\\boxed{', '').replace('}', '')
+                        impacts = [imp.strip() for imp in cleaned_text.split(".") if imp.strip()]
+                        
                         for impact in impacts:
-                            if impact.strip():
-                                st.markdown(f"• {impact.strip()}")
-                        st.markdown("---")
+                            st.markdown(f"• {impact}")
+                        st.markdown("")
 
                     if "mitigation" in data:
                         st.markdown("### 🛡️ Recommended Mitigations")
-                        mitigations = data["mitigation"].replace('\\boxed{', '').replace('}', '').split(", ")
-                        for mitigation in mitigations:
-                            if mitigation.strip():
-                                st.markdown(f"• {mitigation.strip()}")
+                        cleaned_text = data["mitigation"].replace('\\boxed{', '').replace('}', '')
+                        mitigations = [mit.strip() for mit in cleaned_text.split(". ") if mit.strip()]
+                        
+                        for i, mitigation in enumerate(mitigations, 1):
+                            if mitigation.lower().startswith("recommended"):
+                                mitigation = mitigation.split(":", 1)[1].strip()
+                            st.markdown(f"**{i}.** {mitigation}")
 
                 elif response["format"] == "text":
                     try:
