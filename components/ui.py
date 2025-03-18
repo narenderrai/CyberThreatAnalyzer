@@ -1,5 +1,5 @@
 import streamlit as st
-import os # Added for environment variable handling
+import os
 
 def render_header():
     st.title("Cyber Threat Analysis Platform")
@@ -10,25 +10,18 @@ def render_header():
 
 def render_sidebar():
     st.sidebar.title("Settings")
-
     analysis_type = st.sidebar.selectbox(
         "Analysis Type",
         ["Timeline", "Attack Vectors", "TTPs", "Recent Threats"]
     )
-
     export_format = st.sidebar.selectbox(
         "Export Format",
         ["csv", "json"]
     )
-
-    # No model selection shown to end users
-    # API configuration happens server-side
-
     return analysis_type, export_format
 
 def render_query_section(templates):
     st.subheader("Query Input")
-
     use_template = st.checkbox("Use Template")
 
     if use_template:
@@ -54,68 +47,54 @@ def render_query_section(templates):
     return query
 
 def render_response(response, tags):
-    st.subheader("Analysis Results")
+    st.subheader("Threat Analysis Report")
 
-    with st.expander("Response Details", expanded=True):
+    with st.container():
         if isinstance(response, dict):
-            # Check if it's an error response
             if "error" in response:
                 st.error(f"Error: {response['error']}")
-                if 'raw_response' in response and response['raw_response']:
-                    st.text_area("Raw Response", response['raw_response'], height=300)
-                
-                # Display setup instructions if available
                 if 'setup_instructions' in response:
                     st.warning("Setup Instructions:")
                     st.info(response['setup_instructions'])
             elif "status" in response and response["status"] == "success":
-                st.success("API Response received successfully")
-                
-                if response["format"] == "json":
-                    st.json(response["data"])
-                elif response["format"] == "text":
-                    st.markdown("### Analysis Content")
-                    st.write(response["data"]["content"])
-                    
-                    if "sections" in response["data"]:
-                        st.markdown("### Sections")
-                        for section in response["data"]["sections"]:
-                            st.text(section)
-                    
-                    # Add a button to open Secrets tool
-                    if 'error' in response and ("API key" in response['error'].lower() or "OPENROUTER_API_KEY" in response['error']):
-                        st.markdown("""
-                        ### How to set your API key:
-                        1. Click on the **Tools** button in the left sidebar
-                        2. Select **Secrets**
-                        3. Add a new secret with key `OPENROUTER_API_KEY` and your API key as the value
-                        4. Restart your application
-                        """)
-            else:
-                # Normal dictionary response
-                for key, value in response.items():
-                    st.markdown(f"**{key}:**")
-                    st.write(value)
-        else:
-            # Handle string or other type responses
-            st.text_area("Response", str(response), height=300)
+                st.success("Analysis Complete")
 
-    with st.expander("Tags", expanded=True):
-        if isinstance(tags, dict):
-            # Check if it's an error response in tags
-            if "error" in tags:
-                st.error(f"Error: {tags['error']}")
-                if 'raw_response' in tags and tags['raw_response']:
-                    st.text_area("Raw Tags Response", tags['raw_response'], height=300)
-                
-                # Display setup instructions if available
-                if 'setup_instructions' in tags:
-                    st.warning("Setup Instructions:")
-                    st.info(tags['setup_instructions'])
-            else:
-                # Normal dictionary tags
-                for key, value in tags.items():
-                    st.markdown(f"**{key}:** {value}")
-        else:
-            # Handle string or other type tags
-            st.text_area("Tags", str(tags), height=300)
+                if response["format"] == "json":
+                    data = response["data"]
+                    # Display as formatted report sections
+                    if "attack_vector" in data:
+                        st.markdown("### Attack Vector Analysis")
+                        st.markdown(data["attack_vector"])
+
+                    if "timeline" in data:
+                        st.markdown("### Attack Timeline")
+                        st.markdown(data["timeline"])
+
+                    if "impact" in data:
+                        st.markdown("### Potential Impact")
+                        st.markdown(data["impact"])
+
+                    if "mitigation" in data:
+                        st.markdown("### Recommended Mitigations")
+                        st.markdown(data["mitigation"])
+
+                elif response["format"] == "text":
+                    st.markdown("### Analysis Details")
+                    st.markdown(response["data"]["content"])
+
+                    if "sections" in response["data"]:
+                        for section in response["data"]["sections"]:
+                            st.markdown(f"- {section}")
+
+        if isinstance(tags, dict) and not "error" in tags:
+            st.markdown("### Threat Classification")
+            if "TTP" in tags:
+                st.markdown(f"**TTPs:** {tags['TTP']}")
+            if "attack_vector" in tags:
+                st.markdown(f"**Attack Vector:** {tags['attack_vector']}")
+            if "threat_actor" in tags:
+                st.markdown(f"**Threat Actor:** {tags['threat_actor']}")
+            if "target_sector" in tags:
+                st.markdown(f"**Target Sector:** {tags['target_sector']}")
+            if "Severity Level" in tags:
+                st.markdown(f"**Severity Level:** {tags['Severity Level']}")
