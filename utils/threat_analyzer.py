@@ -43,21 +43,13 @@ class ThreatAnalyzer:
 
     def store_response(self, query, response, tags):
         try:
-            # Store raw API response
-            raw_response = {
-                'timestamp': datetime.utcnow().isoformat(),
-                'raw_api_response': response,
-                'query': query
-            }
-            
             # Get scraped data
             scraped_data = self.scrape_threat_data(query)
             
             # Combine API response with scraped data
             combined_response = {
                 'api_response': response,
-                'scraped_data': scraped_data,
-                'raw_data': raw_response
+                'scraped_data': scraped_data
             }
             
             return self.db.store_analysis(query, combined_response, tags)
