@@ -143,11 +143,26 @@ def render_response(response, tags):
 
             # Generate and display formatted report
             if isinstance(response, dict) and 'api_response' in response:
+                # Display the current analysis report
                 report = st.session_state.threat_analyzer.generate_threat_report(response)
                 st.markdown(report)
+                
+                # Display historical analysis in an expander
+                with st.expander("📚 View Historical Analysis"):
+                    history_df = st.session_state.threat_analyzer.get_historical_analysis()
+                    if not history_df.empty:
+                        st.dataframe(
+                            history_df[['timestamp', 'query']].sort_values('timestamp', ascending=False),
+                            use_container_width=True
+                        )
+                    else:
+                        st.info("No historical analysis available yet.")
 
             if isinstance(tags, dict) and not "error" in tags:
                 st.markdown("### Threat Classification")
+                for key, value in tags.items():
+                    if key != "error":
+                        st.markdown(f"**{key}**: {value}")
                 if "TTP" in tags:
                     st.markdown(f"**TTPs:** {tags['TTP']}")
                 if "attack_vector" in tags:

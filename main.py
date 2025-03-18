@@ -36,6 +36,10 @@ def main():
                 query, response, tags
             )
             
+            # Indicate successful storage
+            if 'error' not in analysis:
+                st.success("✅ Analysis stored successfully")
+            
             # Display response
             render_response(response, tags)
             
