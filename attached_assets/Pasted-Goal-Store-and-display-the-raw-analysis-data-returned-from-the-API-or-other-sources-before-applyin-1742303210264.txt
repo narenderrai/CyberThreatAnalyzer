@@ -1,0 +1,73 @@
+Goal
+Store and display the raw analysis data returned from the API (or other sources) before applying any parsing, transformation, or formatting. Then, present both the raw data and the neatly formatted final report in the output for clarity.
+
+🛠️ Prerequisites
+Your ThreatAnalyzer class is already processing and formatting data.
+You can access raw data responses before they're passed into generate_threat_report() or any other data-processing method.
+You have a main execution flow (controller, CLI script, or app layer) where you'll add raw data storage and output logic.
+📋 Task Details
+1. Capture and Save the Raw Response
+After receiving the raw API response or scraped data, save the unprocessed data separately.
+Example:
+python
+Copy
+Edit
+raw_data = response_from_api  # Or combined data with scraped_data
+2. Store Raw Data Separately (Optional)
+If you're saving the raw data in your database, consider storing it in a separate field like raw_data before any processing.
+Alternatively, store it in a separate file (raw_analysis.json) or log it for future reference.
+3. Display Raw Data Before Processing
+Present raw data to the user before showing the final processed report.
+Use json.dumps() with indentation or pprint to show the raw structure neatly.
+Example display logic:
+python
+Copy
+Edit
+import json
+
+print("\n===== RAW ANALYSIS DATA =====")
+print(json.dumps(raw_data, indent=4))  # Display raw data as-is
+4. Process and Display the Neat, Clean Final Report
+Pass the raw data into generate_threat_report() (or your existing processor).
+Example:
+python
+Copy
+Edit
+final_report = analyzer.generate_threat_report(combined_response)
+print("\n===== CLEANED & FORMATTED THREAT ANALYSIS REPORT =====")
+print(final_report)
+5. Optional Enhancements
+Offer the option to export raw data as JSON, CSV, or store in your database for auditing purposes.
+Implement toggle options in the UI (or CLI flags) to show/hide raw data display.
+✅ Success Criteria
+The raw, unprocessed analysis data is displayed in full, before any transformations are applied.
+The formatted, cleaned report follows the raw data output, providing a structured, user-friendly summary.
+The raw data is optionally stored for audit trails or debugging without changing the existing data processing logic.
+📂 Files Involved
+main.py (or wherever you trigger analysis functions and display results)
+Capture raw data after retrieval.
+Add display logic for raw and formatted reports.
+📝 Example Execution Flow (Described in Steps)
+Receive API & Scraped Data
+raw_data = analyzer.store_response(query, response, tags)
+
+Display Raw Data
+
+python
+Copy
+Edit
+import json
+print("\n===== RAW ANALYSIS DATA =====")
+print(json.dumps(raw_data, indent=4))
+Generate and Display Final Report
+
+python
+Copy
+Edit
+final_report = analyzer.generate_threat_report(raw_data)
+print("\n===== CLEANED & FORMATTED THREAT ANALYSIS REPORT =====")
+print(final_report)
+📚 Docs / References
+Python JSON Pretty Print
+Python pprint Module
+Data Export Best Practices
