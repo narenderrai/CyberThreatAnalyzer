@@ -83,7 +83,7 @@ def render_response(response, tags):
                             st.text(section)
                     
                     # Add a button to open Secrets tool
-                    if "API key" in response['error'].lower() or "OPENROUTER_API_KEY" in response['error']:
+                    if 'error' in response and ("API key" in response['error'].lower() or "OPENROUTER_API_KEY" in response['error']):
                         st.markdown("""
                         ### How to set your API key:
                         1. Click on the **Tools** button in the left sidebar
