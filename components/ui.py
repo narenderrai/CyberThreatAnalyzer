@@ -141,20 +141,10 @@ def render_response(response, tags):
                         clean_content = response["data"]["content"].replace('\\boxed{', '').replace('}', '')
                         st.markdown(clean_content)
 
-            # Display scraped data if available
+            # Generate and display formatted report
             if isinstance(response, dict) and 'api_response' in response:
-                st.markdown("### 🌐 Related Threat Data")
-                scraped_data = response.get('scraped_data', {})
-
-                if 'cve_data' in scraped_data and scraped_data['cve_data']:
-                    st.markdown("#### 🔍 Related CVEs")
-                    for cve in scraped_data['cve_data']:
-                        st.markdown(f"• {cve}")
-
-                if 'exploit_data' in scraped_data and scraped_data['exploit_data']:
-                    st.markdown("#### ⚠️ Related Exploits")
-                    for exploit in scraped_data['exploit_data']:
-                        st.markdown(f"• {exploit}")
+                report = st.session_state.threat_analyzer.generate_threat_report(response)
+                st.markdown(report)
 
             if isinstance(tags, dict) and not "error" in tags:
                 st.markdown("### Threat Classification")
