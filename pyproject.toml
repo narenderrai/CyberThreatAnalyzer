@@ -5,12 +5,14 @@ description = "Add your description here"
 requires-python = ">=3.11"
 dependencies = [
     "anthropic>=0.45.2",
+    "beautifulsoup4>=4.13.3",
     "google-cloud-aiplatform>=1.80.0",
     "huggingface-hub>=0.28.1",
     "openai>=1.63.2",
     "pandas>=2.2.3",
     "plotly>=6.0.0",
     "psycopg2-binary>=2.9.10",
+    "requests>=2.32.3",
     "sqlalchemy>=2.0.38",
     "streamlit>=1.42.1",
     "twilio>=9.4.5",

@@ -63,7 +63,7 @@ def render_response(response, tags):
                     data = response["data"]
                     st.markdown("## 📊 Threat Analysis Report")
                     st.markdown("---")
-                    
+
                     if "attack_vector" in data:
                         st.markdown("### 🎯 Attack Vector Analysis")
                         cleaned_text = data["attack_vector"].replace('\\boxed{', '').replace('}', '')
@@ -77,7 +77,7 @@ def render_response(response, tags):
                         st.markdown("### ⏱️ Attack Timeline")
                         timeline_text = data["timeline"].replace('\\boxed{', '').replace('}', '')
                         steps = [step for step in timeline_text.split(". ") if step.strip()]
-                        
+
                         for i, step in enumerate(steps, 1):
                             step = step.lstrip("123456789. ")
                             st.markdown(f"**{i}.** {step}")
@@ -87,7 +87,7 @@ def render_response(response, tags):
                         st.markdown("### 💥 Potential Impact")
                         cleaned_text = data["impact"].replace('\\boxed{', '').replace('}', '')
                         impacts = [imp.strip() for imp in cleaned_text.split(".") if imp.strip()]
-                        
+
                         for impact in impacts:
                             st.markdown(f"• {impact}")
                         st.markdown("")
@@ -96,7 +96,7 @@ def render_response(response, tags):
                         st.markdown("### 🛡️ Recommended Mitigations")
                         cleaned_text = data["mitigation"].replace('\\boxed{', '').replace('}', '')
                         mitigations = [mit.strip() for mit in cleaned_text.split(". ") if mit.strip()]
-                        
+
                         for i, mitigation in enumerate(mitigations, 1):
                             if mitigation.lower().startswith("recommended"):
                                 mitigation = mitigation.split(":", 1)[1].strip()
@@ -107,7 +107,7 @@ def render_response(response, tags):
                         # Try to parse the content as JSON after cleaning
                         content = response["data"]["content"].replace('\\boxed{', '').replace('}', '')
                         data = eval(content)
-                        
+
                         if "attack_vector" in data:
                             st.markdown("### 🎯 Attack Vector Analysis")
                             st.markdown(data["attack_vector"])
@@ -141,15 +141,30 @@ def render_response(response, tags):
                         clean_content = response["data"]["content"].replace('\\boxed{', '').replace('}', '')
                         st.markdown(clean_content)
 
-        if isinstance(tags, dict) and not "error" in tags:
-            st.markdown("### Threat Classification")
-            if "TTP" in tags:
-                st.markdown(f"**TTPs:** {tags['TTP']}")
-            if "attack_vector" in tags:
-                st.markdown(f"**Attack Vector:** {tags['attack_vector']}")
-            if "threat_actor" in tags:
-                st.markdown(f"**Threat Actor:** {tags['threat_actor']}")
-            if "target_sector" in tags:
-                st.markdown(f"**Target Sector:** {tags['target_sector']}")
-            if "Severity Level" in tags:
-                st.markdown(f"**Severity Level:** {tags['Severity Level']}")
+            # Display scraped data if available
+            if isinstance(response, dict) and 'api_response' in response:
+                st.markdown("### 🌐 Related Threat Data")
+                scraped_data = response.get('scraped_data', {})
+
+                if 'cve_data' in scraped_data and scraped_data['cve_data']:
+                    st.markdown("#### 🔍 Related CVEs")
+                    for cve in scraped_data['cve_data']:
+                        st.markdown(f"• {cve}")
+
+                if 'exploit_data' in scraped_data and scraped_data['exploit_data']:
+                    st.markdown("#### ⚠️ Related Exploits")
+                    for exploit in scraped_data['exploit_data']:
+                        st.markdown(f"• {exploit}")
+
+            if isinstance(tags, dict) and not "error" in tags:
+                st.markdown("### Threat Classification")
+                if "TTP" in tags:
+                    st.markdown(f"**TTPs:** {tags['TTP']}")
+                if "attack_vector" in tags:
+                    st.markdown(f"**Attack Vector:** {tags['attack_vector']}")
+                if "threat_actor" in tags:
+                    st.markdown(f"**Threat Actor:** {tags['threat_actor']}")
+                if "target_sector" in tags:
+                    st.markdown(f"**Target Sector:** {tags['target_sector']}")
+                if "Severity Level" in tags:
+                    st.markdown(f"**Severity Level:** {tags['Severity Level']}")
