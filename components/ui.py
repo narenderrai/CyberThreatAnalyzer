@@ -61,30 +61,74 @@ def render_response(response, tags):
 
                 if response["format"] == "json":
                     data = response["data"]
-                    # Display as formatted report sections
+                    
                     if "attack_vector" in data:
-                        st.markdown("### Attack Vector Analysis")
-                        st.markdown(data["attack_vector"])
+                        st.markdown("### 🎯 Attack Vector Analysis")
+                        st.markdown(data["attack_vector"].replace('\\boxed{', '').replace('}', ''))
+                        st.markdown("---")
 
                     if "timeline" in data:
-                        st.markdown("### Attack Timeline")
-                        st.markdown(data["timeline"])
+                        st.markdown("### ⏱️ Attack Timeline")
+                        timeline_text = data["timeline"].replace('\\boxed{', '').replace('}', '')
+                        steps = timeline_text.split(". ")
+                        for step in steps:
+                            if step.strip():
+                                st.markdown(f"• {step.strip()}")
+                        st.markdown("---")
 
                     if "impact" in data:
-                        st.markdown("### Potential Impact")
-                        st.markdown(data["impact"])
+                        st.markdown("### 💥 Potential Impact")
+                        impacts = data["impact"].replace('\\boxed{', '').replace('}', '').split(", ")
+                        for impact in impacts:
+                            if impact.strip():
+                                st.markdown(f"• {impact.strip()}")
+                        st.markdown("---")
 
                     if "mitigation" in data:
-                        st.markdown("### Recommended Mitigations")
-                        st.markdown(data["mitigation"])
+                        st.markdown("### 🛡️ Recommended Mitigations")
+                        mitigations = data["mitigation"].replace('\\boxed{', '').replace('}', '').split(", ")
+                        for mitigation in mitigations:
+                            if mitigation.strip():
+                                st.markdown(f"• {mitigation.strip()}")
 
                 elif response["format"] == "text":
-                    st.markdown("### Analysis Details")
-                    st.markdown(response["data"]["content"])
+                    try:
+                        # Try to parse the content as JSON after cleaning
+                        content = response["data"]["content"].replace('\\boxed{', '').replace('}', '')
+                        data = eval(content)
+                        
+                        if "attack_vector" in data:
+                            st.markdown("### 🎯 Attack Vector Analysis")
+                            st.markdown(data["attack_vector"])
+                            st.markdown("---")
 
-                    if "sections" in response["data"]:
-                        for section in response["data"]["sections"]:
-                            st.markdown(f"- {section}")
+                        if "timeline" in data:
+                            st.markdown("### ⏱️ Attack Timeline")
+                            steps = data["timeline"].split(". ")
+                            for step in steps:
+                                if step.strip():
+                                    st.markdown(f"• {step.strip()}")
+                            st.markdown("---")
+
+                        if "impact" in data:
+                            st.markdown("### 💥 Potential Impact")
+                            impacts = data["impact"].split(", ")
+                            for impact in impacts:
+                                if impact.strip():
+                                    st.markdown(f"• {impact.strip()}")
+                            st.markdown("---")
+
+                        if "mitigation" in data:
+                            st.markdown("### 🛡️ Recommended Mitigations")
+                            mitigations = data["mitigation"].split(", ")
+                            for mitigation in mitigations:
+                                if mitigation.strip():
+                                    st.markdown(f"• {mitigation.strip()}")
+                    except:
+                        # Fallback to plain text display if parsing fails
+                        st.markdown("### Analysis Details")
+                        clean_content = response["data"]["content"].replace('\\boxed{', '').replace('}', '')
+                        st.markdown(clean_content)
 
         if isinstance(tags, dict) and not "error" in tags:
             st.markdown("### Threat Classification")
