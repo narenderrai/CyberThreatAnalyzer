@@ -85,10 +85,14 @@ class GPTHelper:
                 "setup_instructions": "Verify your OpenRouter API key is valid and properly configured."
             }
 
+    
+    # need to work on this function for prompt in order to get the right response.
+
+    
     def analyze_threat(self, query, context=""):
         print(f"\nAnalyzing threat query: {query}")
         prompt = f"""You are a cybersecurity expert analyzing threat data. 
-        Provide detailed, factual responses about cyber threats, attack vectors, and TTPs.
+        Provide detailed, factual responses about cyber threats, attack vectors, and TTPs. 
         
         IMPORTANT: Your response MUST be in valid JSON format with the following structure:
         {{
