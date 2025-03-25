@@ -91,21 +91,36 @@ class GPTHelper:
     
     def analyze_threat(self, query, context=""):
         print(f"\nAnalyzing threat query: {query}")
-        prompt = f"""You are a cybersecurity expert analyzing threat data. 
-        Provide detailed, factual responses about cyber threats, attack vectors, and TTPs. 
+        prompt = f"""You are a cybersecurity expert analyzing cyber threat data.
         
-        IMPORTANT: Your response MUST be in valid JSON format with the following structure:
-        {{
-            "attack_vector": "Description of attack methods",
-            "timeline": "Progression of the attack",
-            "impact": "Potential consequences",
-            "mitigation": "Recommended countermeasures"
-        }}
+        IMPORTANT: Provide a detailed response with the following structure:
+
+        Attack Vectors: [Methods and pathways of the cyberattack]
+        
+        TTPs:
+        - Tactics: [High-level attacker objectives]
+        - Techniques: [Specific methods used]
+        - Procedures: [Detailed implementation steps]
+        
+        Indicators of Compromise (IoCs): [List relevant IP addresses, file hashes, domains]
+        
+        CVEs: [List associated vulnerabilities]
+        
+        Attack Timeline:
+        - Reconnaissance: [Initial scanning/research]
+        - Initial Compromise: [First point of entry]
+        - Lateral Movement: [Progress through network]
+        - Data Exfiltration: [Data theft methods]
+        - Persistence: [Maintaining access]
+        
+        Incident Reports: [Similar past attacks/case studies]
+        
+        Threat Intelligence: [Updates from security feeds]
 
         Context: {context}
         Query: {query}
 
-        IMPORTANT: Ensure your response is valid JSON that can be parsed with json.loads(). Do not include markdown, backticks, or any text outside of the JSON structure.
+        IMPORTANT: Format response as plain text following the exact structure above. Do not use JSON, markdown, or backticks.
         """
 
         return self._send_request(prompt)
