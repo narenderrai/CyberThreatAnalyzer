@@ -30,8 +30,8 @@ class GPTHelper:
                                  "HTTP-Referer": "https://replit.com/",
                                  "X-Title": "Cyber Threat Analysis Platform"
                              })
-        # Set a default model for OpenRouter - this was causing the "No models provided" error
-        self.openai_model = "deepseek/deepseek-r1-zero:free"
+        # Set Gemma model for OpenRouter
+        self.openai_model = "google/gemma-3-12b-it:free"
 
     def _send_request(self, prompt):
         if not self.openai_api_key or self.openai_api_key == "missing_key":
@@ -63,6 +63,8 @@ class GPTHelper:
 
             response_text = completion.choices[0].message.content.strip()
             print(f"Raw response from OpenRouter: {response_text}")
+            print(f"Response length: {len(response_text)}")
+            print(f"Response type: {type(response_text)}")
 
             # Try to parse as JSON
             try:
