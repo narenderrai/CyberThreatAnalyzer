@@ -1,0 +1,41 @@
+"I have an issue where the output for threat analysis is showing 'Not available in text format' for various components like Attack Vectors, TTPs, IoCs, CVEs, and others, which is incorrect. The goal is to properly format the output to show meaningful data.
+
+I need you to update my analyze_threat function so that the output is structured correctly and that each section provides valid data in a readable format instead of saying 'Not available in text format'.
+
+Here’s what I need fixed:
+
+Attack Vectors: Show a description of the attack methods used in the threat (e.g., Phishing, Malware, Ransomware, etc.).
+
+TTPs (Tactics, Techniques, and Procedures): Ensure that tactics, techniques, and procedures are clearly listed and not missing. If information is unavailable, it should explicitly say 'Data unavailable' rather than 'Not available in text format'.
+
+Indicators of Compromise (IoCs): If IoCs are present (e.g., IP addresses, file hashes), they should be shown. Otherwise, state 'No IoCs available'.
+
+Common Vulnerabilities and Exposures (CVEs): Provide CVE information if available. If not, explicitly state 'No CVEs available'.
+
+Attack Timeline: Provide the attack timeline if possible. If missing, state 'No timeline available'.
+
+Incident Reports: If there are relevant incident reports, include them. Otherwise, state 'No incident reports available'.
+
+Threat Intelligence: Provide any relevant threat intelligence information. If unavailable, state 'No threat intelligence available'.
+
+Make sure the output is in text format and clearly structured, and avoid the use of 'Not available in text format'. Each section should be formatted like this:
+
+less
+Copy
+Edit
+📊 Threat Analysis Report
+🎯 Attack Vectors: [Description of attack methods]
+🔍 TTPs (Tactics, Techniques, and Procedures):
+  Tactics: [Tactics description]
+  Techniques: [Techniques description]
+  Procedures: [Procedures description]
+🚨 Indicators of Compromise: [List of IoCs or 'No IoCs available']
+🔓 Common Vulnerabilities and Exposures: [CVE numbers or 'No CVEs available']
+⏱️ Attack Timeline: [Description of attack timeline or 'No timeline available']
+📋 Related Incident Reports: [Details or 'No incident reports available']
+📡 Threat Intelligence: [Threat intelligence details or 'No threat intelligence available']
+Threat Classification: [Status, e.g., success or failure]
+Ensure the response is clear, and if any data is unavailable, it should be explicitly stated as 'No [Data] available' instead of using the generic 'Not available in text format'.
+
+Please implement these changes in the analyze_threat function."
+
