@@ -7,7 +7,6 @@ dependencies = [
     "anthropic>=0.45.2",
     "beautifulsoup4>=4.13.3",
     "google-cloud-aiplatform>=1.85.0",
-    "huggingface-hub>=0.28.1",
     "openai>=1.63.2",
     "pandas>=2.2.3",
     "plotly>=6.0.0",
@@ -16,7 +15,6 @@ dependencies = [
     "sqlalchemy>=2.0.38",
     "streamlit>=1.42.1",
     "twilio>=9.4.5",
-    "vertexai>=1.43.0",
 ]
 
 [[tool.uv.index]]
@@ -477,7 +475,6 @@ hjxdl = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 hkkang-utils = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 hordelib = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 hpsv2 = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
-huggingface-hub = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 hummingbird-ml = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 hvae-backbone = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 hya = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
@@ -1102,7 +1099,6 @@ vectice = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 vector-quantize-pytorch = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 vectorhub-nightly = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 versatile-audio-upscaler = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
-vertexai = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 vesin = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 vgg-pytorch = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
 video-representations-extractor = [{ index = "pytorch-cpu", marker = "platform_system == 'Linux'" }]
