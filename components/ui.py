@@ -119,33 +119,41 @@ def render_response(response, tags):
                         content = response["data"]["content"].replace('\\boxed{', '').replace('}', '')
                         data = eval(content)
 
+                        st.markdown("## 📊 Detailed Analysis Report")
+
                         if "attack_vector" in data:
                             st.markdown("### 🎯 Attack Vector Analysis")
-                            st.markdown(data["attack_vector"])
+                            st.text(data["attack_vector"])
                             st.markdown("---")
 
                         if "timeline" in data:
                             st.markdown("### ⏱️ Attack Timeline")
-                            steps = data["timeline"].split(". ")
-                            for step in steps:
-                                if step.strip():
-                                    st.markdown(f"• {step.strip()}")
+                            timeline_items = data['timeline'].split(".")
+                            for item in timeline_items:
+                                if item.strip():
+                                    st.markdown(f"- {item.strip()}")
                             st.markdown("---")
 
                         if "impact" in data:
-                            st.markdown("### 💥 Potential Impact")
-                            impacts = data["impact"].split(", ")
-                            for impact in impacts:
-                                if impact.strip():
-                                    st.markdown(f"• {impact.strip()}")
+                            st.markdown("### 💥 Impact Analysis")
+                            impact_items = data['impact'].replace('-', '•').split("•")
+                            for item in impact_items:
+                                if item.strip():
+                                    st.markdown(f"- {item.strip()}")
                             st.markdown("---")
 
                         if "mitigation" in data:
-                            st.markdown("### 🛡️ Recommended Mitigations")
-                            mitigations = data["mitigation"].split(", ")
-                            for mitigation in mitigations:
-                                if mitigation.strip():
-                                    st.markdown(f"• {mitigation.strip()}")
+                            st.markdown("### 🛡️ Mitigation Strategies")
+                            mitigation_items = data['mitigation'].replace('-', '•').split("•")
+                            for item in mitigation_items:
+                                if item.strip():
+                                    st.markdown(f"- {item.strip()}")
+                            st.markdown("---")
+
+                        # Display raw response in expander
+                        with st.expander("View Raw JSON Response"):
+                            st.json(data)
+
                     except:
                         # Fallback to plain text display if parsing fails
                         st.markdown("### Analysis Details")
