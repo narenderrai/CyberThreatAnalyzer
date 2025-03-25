@@ -92,20 +92,31 @@ class GPTHelper:
     def analyze_threat(self, query, context=""):
         print(f"\nAnalyzing threat query: {query}")
         prompt = f"""You are a cybersecurity expert analyzing threat data. 
-        Provide detailed, factual responses about cyber threats, attack vectors, and TTPs. 
-        
+        Provide detailed, factual responses about cyber threats in this specific structure:
+
         IMPORTANT: Your response MUST be in valid JSON format with the following structure:
         {{
-            "attack_vector": "Description of attack methods",
-            "timeline": "Progression of the attack",
-            "impact": "Potential consequences",
-            "mitigation": "Recommended countermeasures"
+            "attack_vectors": "Detailed description of attack methods and pathways",
+            "ttps": {{
+                "tactics": "High-level attacker objectives",
+                "techniques": "Specific methods used",
+                "procedures": "Detailed implementation steps"
+            }},
+            "iocs": "List of relevant indicators of compromise (IPs, hashes, domains)",
+            "cves": "Associated CVE identifiers and descriptions",
+            "attack_timeline": "Chronological phases of the attack",
+            "incident_reports": "Related historical attacks and case studies",
+            "threat_intel": "Updates from threat intelligence feeds"
         }}
 
         Context: {context}
         Query: {query}
 
-        IMPORTANT: Ensure your response is valid JSON that can be parsed with json.loads(). Do not include markdown, backticks, or any text outside of the JSON structure.
+        IMPORTANT: 
+        1. Ensure your response is valid JSON that can be parsed with json.loads()
+        2. Do not include markdown, backticks, or any text outside the JSON structure
+        3. Include specific details like MITRE ATT&CK techniques where applicable
+        4. Format all lists as comma-separated strings
         """
 
         return self._send_request(prompt)
