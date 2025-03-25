@@ -93,37 +93,56 @@ class GPTHelper:
         print(f"\nAnalyzing threat query: {query}")
         prompt = f"""You are a cybersecurity expert analyzing cyber threat data.
         
-        IMPORTANT: Provide a detailed response with the following structure:
+        Analyze this query and provide a detailed response with the following structure:
 
-        Attack Vectors: [Methods and pathways of the cyberattack]
+        Attack Vectors:
+        [List and describe primary attack methods relevant to the query]
         
         TTPs:
-        - Tactics: [High-level attacker objectives]
-        - Techniques: [Specific methods used]
-        - Procedures: [Detailed implementation steps]
+        Tactics: [List high-level attacker objectives]
+        Techniques: [List specific methods used]
+        Procedures: [Describe detailed implementation steps]
         
-        Indicators of Compromise (IoCs): [List relevant IP addresses, file hashes, domains]
+        Indicators of Compromise (IoCs):
+        [List any relevant IP addresses, file hashes, domains]
         
-        CVEs: [List associated vulnerabilities]
+        CVEs:
+        [List any associated vulnerabilities]
         
         Attack Timeline:
-        - Reconnaissance: [Initial scanning/research]
-        - Initial Compromise: [First point of entry]
-        - Lateral Movement: [Progress through network]
-        - Data Exfiltration: [Data theft methods]
-        - Persistence: [Maintaining access]
+        1. Reconnaissance: [Describe initial scanning/research]
+        2. Initial Compromise: [Describe first point of entry]
+        3. Lateral Movement: [Describe progress through network]
+        4. Data Exfiltration: [Describe data theft methods]
+        5. Persistence: [Describe maintaining access]
         
-        Incident Reports: [Similar past attacks/case studies]
+        Incident Reports:
+        [Reference similar past attacks/case studies]
         
-        Threat Intelligence: [Updates from security feeds]
+        Threat Intelligence:
+        [Include relevant updates from security feeds]
 
         Context: {context}
         Query: {query}
 
-        IMPORTANT: Format response as plain text following the exact structure above. Do not use JSON, markdown, or backticks.
+        IMPORTANT: 
+        1. Replace all placeholder text in brackets with actual analysis
+        2. Keep the exact section headers and structure
+        3. Provide detailed information for each section
+        4. Use plain text only - no JSON, markdown, or code blocks
         """
 
-        return self._send_request(prompt)
+        response = self._send_request(prompt)
+        
+        # Handle empty responses
+        if isinstance(response, dict) and response.get('status') == 'success':
+            if not response.get('data', {}).get('content'):
+                response['data'] = {
+                    'content': 'No analysis data available for the given query.',
+                    'sections': ['No analysis data available for the given query.']
+                }
+        
+        return response
 
     def tag_threat_data(self, data):
         print(f"\nTagging threat data: {data}")
