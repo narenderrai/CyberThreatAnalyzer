@@ -1,0 +1,9 @@
+
+streamlit>=1.42.1
+pandas>=2.2.3 
+beautifulsoup4>=4.13.3
+requests>=2.32.3
+openai>=1.63.2
+anthropic>=0.45.2
+google-cloud-aiplatform>=1.35.0
+plotly>=6.0.0
