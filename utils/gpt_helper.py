@@ -68,14 +68,24 @@ class GPTHelper:
                 }
             except json.JSONDecodeError:
                 print(f"Failed to parse OpenRouter response as JSON, formatting as text")
-                # Structure the text response
+                # Provide a structured fallback response
+                fallback_response = {
+                    "attack_vectors": response_text,
+                    "ttps": {
+                        "tactics": "Not available in text format",
+                        "techniques": "Not available in text format",
+                        "procedures": "Not available in text format"
+                    },
+                    "iocs": "Not available in text format",
+                    "cves": "Not available in text format",
+                    "attack_timeline": response_text,
+                    "incident_reports": "Not available in text format",
+                    "threat_intel": "Not available in text format"
+                }
                 return {
                     "status": "success",
-                    "format": "text",
-                    "data": {
-                        "content": response_text,
-                        "sections": [s.strip() for s in response_text.split('\n\n') if s.strip()]
-                    }
+                    "format": "json",
+                    "data": fallback_response
                 }
         except Exception as e:
             print(f"Error in OpenRouter request: {str(e)}")
