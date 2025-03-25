@@ -68,20 +68,20 @@ class GPTHelper:
                 }
             except json.JSONDecodeError:
                 print(f"Failed to parse OpenRouter response as JSON, formatting as text")
-                # Provide a structured fallback response
-                # Parse the text response into structured format
+                # Format the text response in a more readable way
+                sentences = response_text.split('. ')
                 fallback_response = {
-                    "attack_vectors": response_text[:200] + "..." if len(response_text) > 200 else response_text,
+                    "attack_vectors": sentences[0] if sentences else response_text,
                     "ttps": {
-                        "tactics": "Unable to extract specific tactics from unstructured response",
-                        "techniques": "Unable to extract specific techniques from unstructured response",
-                        "procedures": "Unable to extract specific procedures from unstructured response"
+                        "tactics": sentences[1] if len(sentences) > 1 else "No specific tactics identified",
+                        "techniques": sentences[2] if len(sentences) > 2 else "No specific techniques identified",
+                        "procedures": sentences[3] if len(sentences) > 3 else "No specific procedures identified"
                     },
-                    "iocs": "No IoCs extracted from unstructured response",
-                    "cves": "No CVEs identified in unstructured response",
-                    "attack_timeline": "Timeline could not be constructed from unstructured response",
-                    "incident_reports": "No specific incidents identified in unstructured response",
-                    "threat_intel": "Additional threat intelligence not available from unstructured response"
+                    "iocs": sentences[4] if len(sentences) > 4 else "No specific IoCs identified",
+                    "cves": sentences[5] if len(sentences) > 5 else "No specific CVEs identified",
+                    "attack_timeline": ". ".join(sentences[6:8]) if len(sentences) > 6 else "No timeline available",
+                    "incident_reports": sentences[8] if len(sentences) > 8 else "No specific incidents identified",
+                    "threat_intel": ". ".join(sentences[9:]) if len(sentences) > 9 else "No additional threat intelligence available"
                 }
                 return {
                     "status": "success",
