@@ -59,17 +59,6 @@ def render_response(response, tags):
             elif "status" in response and response["status"] == "success":
                 st.success("Analysis Complete")
 
-                # Raw API Response
-                st.subheader("📡 Raw API Response")
-                with st.expander("View Raw Response", expanded=True):
-                    st.json(response)
-
-                # Raw Combined Data (API + Scraped)
-                if 'api_response' in response:
-                    st.subheader("🔄 Combined Raw Data (API + Scraped)")
-                    with st.expander("View Combined Data"):
-                        st.json({"api_response": response, "scraped_data": response.get('scraped_data', {})})
-
                 if response["format"] == "json":
                     data = response["data"]
                     st.markdown("## 📊 Threat Analysis Report")
