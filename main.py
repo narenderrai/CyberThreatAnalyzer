@@ -63,4 +63,6 @@ def main():
             st.rerun()
 
 if __name__ == "__main__":
+    st.set_page_config(page_title="Cyber Threat Analysis Platform")
     main()
+    # Note: The actual server parameters are handled by the workflow configuration
