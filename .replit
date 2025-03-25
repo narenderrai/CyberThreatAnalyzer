@@ -1,4 +1,4 @@
-modules = ["nix", "python-3.11", "python-3.13"]
+modules = ["python-3.11", "nix"]
 run = "app"
 
 [nix]
@@ -39,6 +39,10 @@ waitForPort = 5000
 name = "Streamlit"
 author = 40851622
 mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "pip install -r requirements.txt"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
