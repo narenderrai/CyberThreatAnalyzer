@@ -68,25 +68,14 @@ class GPTHelper:
                 }
             except json.JSONDecodeError:
                 print(f"Failed to parse OpenRouter response as JSON, formatting as text")
-                # Format the text response in a more readable way
-                sentences = response_text.split('. ')
-                fallback_response = {
-                    "attack_vectors": sentences[0] if sentences else response_text,
-                    "ttps": {
-                        "tactics": sentences[1] if len(sentences) > 1 else "No specific tactics identified",
-                        "techniques": sentences[2] if len(sentences) > 2 else "No specific techniques identified",
-                        "procedures": sentences[3] if len(sentences) > 3 else "No specific procedures identified"
-                    },
-                    "iocs": sentences[4] if len(sentences) > 4 else "No specific IoCs identified",
-                    "cves": sentences[5] if len(sentences) > 5 else "No specific CVEs identified",
-                    "attack_timeline": ". ".join(sentences[6:8]) if len(sentences) > 6 else "No timeline available",
-                    "incident_reports": sentences[8] if len(sentences) > 8 else "No specific incidents identified",
-                    "threat_intel": ". ".join(sentences[9:]) if len(sentences) > 9 else "No additional threat intelligence available"
-                }
+                # Structure the text response
                 return {
                     "status": "success",
-                    "format": "json",
-                    "data": fallback_response
+                    "format": "text",
+                    "data": {
+                        "content": response_text,
+                        "sections": [s.strip() for s in response_text.split('\n\n') if s.strip()]
+                    }
                 }
         except Exception as e:
             print(f"Error in OpenRouter request: {str(e)}")
@@ -102,34 +91,21 @@ class GPTHelper:
     
     def analyze_threat(self, query, context=""):
         print(f"\nAnalyzing threat query: {query}")
-        prompt = f"""You are a cybersecurity expert providing a detailed threat analysis.
-
-        For the following query, analyze the threat and provide SPECIFIC, DETAILED information in this exact JSON structure:
-
+        prompt = f"""You are a cybersecurity expert analyzing threat data. 
+        Provide detailed, factual responses about cyber threats, attack vectors, and TTPs. 
+        
+        IMPORTANT: Your response MUST be in valid JSON format with the following structure:
         {{
-            "attack_vectors": "Provide a DETAILED list of specific attack methods and pathways used (e.g., Spear phishing emails targeting finance department, Remote Desktop Protocol exploitation on port 3389, etc.)",
-            "ttps": {{
-                "tactics": "List SPECIFIC attacker objectives (e.g., Initial Access through phishing, Lateral Movement via compromised credentials, etc.)",
-                "techniques": "List DETAILED attack techniques used (e.g., T1566.001 - Spearphishing Attachment, T1110 - Brute Force, etc.)",
-                "procedures": "Step-by-step breakdown of the attack implementation (minimum 3 specific steps)"
-            }},
-            "iocs": "List ALL relevant indicators: IP addresses (e.g., 192.168.1.1), file hashes (e.g., a1b2c3...), domains (e.g., malicious-domain.com), email addresses, etc. If none known, state 'No verified IoCs available.'",
-            "cves": "List specific CVE IDs and descriptions (e.g., CVE-2021-34527 - PrintNightmare). If none relevant, state 'No specific CVEs associated.'",
-            "attack_timeline": "Provide a chronological breakdown of attack stages with specific timeframes or sequence of events. If theoretical, provide typical timeline.",
-            "incident_reports": "Reference specific historical incidents related to this type of attack (e.g., 'Colonial Pipeline Ransomware Attack - May 2021'). If none relevant, state 'No specific incidents documented.'",
-            "threat_intel": "Current threat landscape updates, active threat actors, or emerging trends related to this threat. Be specific."
+            "attack_vector": "Description of attack methods",
+            "timeline": "Progression of the attack",
+            "impact": "Potential consequences",
+            "mitigation": "Recommended countermeasures"
         }}
 
-        Query: {query}
         Context: {context}
+        Query: {query}
 
-        REQUIREMENTS:
-        1. NEVER use placeholder text. Provide real, detailed technical information.
-        2. NEVER leave any field empty or with generic responses.
-        3. ALL responses must be security-focused and technically accurate.
-        4. Include MITRE ATT&CK references where applicable.
-        5. If information is truly not available for a field, provide a clear explanation why.
-        6. Format lists as comma-separated strings.
+        IMPORTANT: Ensure your response is valid JSON that can be parsed with json.loads(). Do not include markdown, backticks, or any text outside of the JSON structure.
         """
 
         return self._send_request(prompt)
