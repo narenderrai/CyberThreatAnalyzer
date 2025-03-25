@@ -1,0 +1,86 @@
+"I need you to update the analyze_threat function in my app to reflect a new structure based on specific components of cyber threat data. Below is the updated structure I want for the GPT prompt.
+
+New Structure:
+I want to analyze cyber threat data with the following key components:
+
+Attack Vectors: The methods or pathways through which cyberattacks are carried out (e.g., Phishing, malware, ransomware, DoS, etc.).
+
+TTPs (Tactics, Techniques, and Procedures):
+
+Tactics: High-level objectives attackers aim to achieve (e.g., initial access, exfiltration of data).
+
+Techniques: Specific methods used to achieve a tactic (e.g., spear phishing, credential dumping).
+
+Procedures: Detailed descriptions of how specific techniques are implemented. Example Framework: MITRE ATT&CK Framework.
+
+Indicators of Compromise (IoCs): Pieces of forensic data that help identify malicious activity (e.g., malicious IPs, domain names, file hashes).
+
+Common Vulnerabilities and Exposures (CVEs): Publicly disclosed vulnerabilities (e.g., CVE-2021-34527).
+
+Attack Timelines: The sequence of events in an attack, such as reconnaissance, initial compromise, lateral movement, data exfiltration, and persistence.
+
+Incident Reports and Case Studies: Reports and analyses from past cyberattacks, e.g., from FireEye, CrowdStrike.
+
+Threat Intelligence Feeds: Updates from cybersecurity feeds like AlienVault or Recorded Future.
+
+The new prompt should generate a text-based response in this structure:
+
+Attack Vectors: Brief description of attack methods.
+
+TTPs: Breakdown of tactics, techniques, and procedures.
+
+Indicators of Compromise (IoCs): Relevant IoCs like IP addresses, file hashes, domains.
+
+CVEs: CVEs associated with the attack.
+
+Attack Timeline: Phases such as reconnaissance, initial compromise, lateral movement, etc.
+
+Incident Reports: Any similar past attacks or case studies.
+
+Threat Intelligence Feed: Updates from cybersecurity feeds.
+
+Make sure the response is clear and strictly follows the structure above. The text should not include markdown, backticks, or extra text outside the specified format.
+
+Here is the updated version of the prompt:
+
+python
+Copy
+Edit
+prompt = f"""
+You are a cybersecurity expert analyzing cyber threat data. 
+Provide detailed, factual responses based on the following components of cyber threat data:
+
+1. **Attack Vectors**: The methods or pathways through which cyberattacks are carried out. For example, Phishing, malware, ransomware, denial-of-service (DoS), supply chain attacks, zero-day exploits, SQL injection, etc.
+2. **TTPs (Tactics, Techniques, and Procedures)**: 
+    - Tactics: High-level objectives attackers aim to achieve (e.g., initial access, exfiltration of data).
+    - Techniques: Specific methods used to achieve a tactic (e.g., spear phishing, credential dumping).
+    - Procedures: Detailed descriptions of how specific techniques are implemented by attackers.
+    Example Framework: MITRE ATT&CK Framework.
+3. **Indicators of Compromise (IoCs)**: Pieces of forensic data used to identify potential malicious activity. For example, malicious IPs, domain names, file hashes (MD5, SHA-256), registry changes, unusual outbound traffic, etc.
+4. **Common Vulnerabilities and Exposures (CVEs)**: Publicly disclosed information about security vulnerabilities. For example, CVE-2021-34527 (PrintNightmare vulnerability).
+5. **Attack Timelines**: The sequence and timing of events in an attack. For example:
+    - Reconnaissance: Scanning networks for vulnerabilities.
+    - Initial Compromise: Gaining unauthorized access.
+    - Lateral Movement: Moving within the network.
+    - Data Exfiltration: Stealing sensitive data.
+    - Persistence: Maintaining long-term access.
+6. **Incident Reports and Case Studies**: Detailed reports and analyses of past cyberattacks. For example, reports from FireEye, CrowdStrike, or Kaspersky.
+7. **Threat Intelligence Feeds**: Updates from cybersecurity feeds, such as AlienVault or Recorded Future, about new threats or vulnerabilities.
+
+IMPORTANT: Your response MUST follow this structure:
+
+- **Attack Vectors**: A brief description of the attack methods used.
+- **TTPs**: A breakdown of tactics, techniques, and procedures used by attackers.
+- **Indicators of Compromise (IoCs)**: Any IoCs relevant to the attack (e.g., IP addresses, file hashes, domains).
+- **CVEs**: Mention any CVEs associated with the attack.
+- **Attack Timeline**: The progression of the attack, detailing phases such as reconnaissance, initial compromise, lateral movement, data exfiltration, and persistence.
+- **Incident Reports**: Reference any similar past attacks or case studies.
+- **Threat Intelligence Feed**: Any updates from cybersecurity feeds.
+
+Context: {context}
+Query: {query}
+
+Ensure your response is factual and in text format, adhering strictly to the structure provided. Do not include markdown, backticks, or any text outside the specified structure.
+"""
+Please make these changes to my analyze_threat function to improve the response structure and ensure it follows the provided guidelines."
+

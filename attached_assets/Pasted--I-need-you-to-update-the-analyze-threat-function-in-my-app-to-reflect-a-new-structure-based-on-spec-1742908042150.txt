@@ -1,0 +1,42 @@
+"I need you to update the analyze_threat function in my app to reflect a new structure based on specific components of cyber threat data. Below is the updated structure I want for the GPT prompt.
+
+New Structure:
+I want to analyze cyber threat data with the following key components:
+
+Attack Vectors: The methods or pathways through which cyberattacks are carried out (e.g., Phishing, malware, ransomware, DoS, etc.).
+
+TTPs (Tactics, Techniques, and Procedures):
+
+Tactics: High-level objectives attackers aim to achieve (e.g., initial access, exfiltration of data).
+
+Techniques: Specific methods used to achieve a tactic (e.g., spear phishing, credential dumping).
+
+Procedures: Detailed descriptions of how specific techniques are implemented. Example Framework: MITRE ATT&CK Framework.
+
+Indicators of Compromise (IoCs): Pieces of forensic data that help identify malicious activity (e.g., malicious IPs, domain names, file hashes).
+
+Common Vulnerabilities and Exposures (CVEs): Publicly disclosed vulnerabilities (e.g., CVE-2021-34527).
+
+Attack Timelines: The sequence of events in an attack, such as reconnaissance, initial compromise, lateral movement, data exfiltration, and persistence.
+
+Incident Reports and Case Studies: Reports and analyses from past cyberattacks, e.g., from FireEye, CrowdStrike.
+
+Threat Intelligence Feeds: Updates from cybersecurity feeds like AlienVault or Recorded Future.
+
+The new prompt should generate a text-based response in this structure:
+
+Attack Vectors: Brief description of attack methods.
+
+TTPs: Breakdown of tactics, techniques, and procedures.
+
+Indicators of Compromise (IoCs): Relevant IoCs like IP addresses, file hashes, domains.
+
+CVEs: CVEs associated with the attack.
+
+Attack Timeline: Phases such as reconnaissance, initial compromise, lateral movement, etc.
+
+Incident Reports: Any similar past attacks or case studies.
+
+Threat Intelligence Feed: Updates from cybersecurity feeds.
+
+Make sure the response is clear and strictly follows the structure above. The text should not include markdown, backticks, or extra text outside the specified format.
