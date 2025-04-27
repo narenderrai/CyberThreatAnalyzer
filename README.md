@@ -122,6 +122,3 @@ MIT License – free to use, modify, and share.
 Got ideas? Found bugs? PRs and issues are welcome!
 ```
 
----
-
-Would you like a version with a badge header (e.g., Docker, Python, ECS ready) or need a sample `.env` for this project?
